@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package runner.network.v1;
+
+option go_package = "runner/network/v1";
+
+service NetworkService {
+  rpc Setup(SetupNetworkRequest) returns (SetupNetworkResponse){}
+  rpc Cleanup(CleanupNetworkRequest) returns (CleanupNetworkResponse){}
+}
+
+message Tap{
+  string ip = 1;
+  string nodeIp = 2;
+  string mac = 3;
+  string tapName = 4;
+}
+
+message SetupNetworkRequest{
+  int32 numVMs = 1;
+}
+
+message SetupNetworkResponse{
+  repeated Tap taps = 1;
+}
+
+message CleanupNetworkRequest{
+}
+
+message CleanupNetworkResponse{
+}

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package runner.vm.v1;
+
+option go_package = "runner/vm/v1";
+
+service VmService {
+  rpc Create(CreateVmRequest) returns (CreateVmResponse){}
+  rpc SendCommand(SendCommandVmRequest) returns (SendCommandVmResponse){}
+}
+
+message Vm{
+  string ip = 1;
+  string nodeIp = 2;
+  string kernelPath = 3;
+  string rootfsPath = 4;
+}
+
+message CreateVmRequest{
+  string ip = 1;
+  string kernelPath = 2;
+  string rootfsPath = 3;
+}
+
+message CreateVmResponse{
+  Vm vm = 1;
+}
+
+message SendCommandVmRequest{
+  string ip = 1;
+  string command = 2;
+}
+
+message SendCommandVmResponse{
+  string output = 1;
+}
