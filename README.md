@@ -1,4 +1,8 @@
 # firecracker-runner-node
+```bash
+go run cmd/main.go -port=50051
+
+```
 # Generate Protobuf
 ```bash
 protoc \
