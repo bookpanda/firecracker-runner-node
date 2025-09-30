@@ -25,6 +25,7 @@ message SetupNetworkResponse{
 }
 
 message CleanupNetworkRequest{
+  int32 numVMs = 1;
 }
 
 message CleanupNetworkResponse{
