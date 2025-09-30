@@ -13,28 +13,30 @@ type Service interface {
 
 type serviceImpl struct {
 	proto.UnimplementedNetworkServiceServer
-	log *zap.Logger
+	bridge *Bridge
+	log    *zap.Logger
 }
 
 func NewService(log *zap.Logger) Service {
 	return &serviceImpl{
-		log: log,
+		bridge: NewBridge("", "", ""),
+		log:    log,
 	}
 }
 
 func (s *serviceImpl) Setup(ctx context.Context, req *proto.SetupNetworkRequest) (*proto.SetupNetworkResponse, error) {
-	taps, err := Setup(int(req.NumVMs))
+	bridge, err := Setup(int(req.NumVMs), req.Subnet, req.BridgeIP)
 	if err != nil {
 		return nil, err
 	}
 
-	return &proto.SetupNetworkResponse{
-		Taps: taps,
-	}, nil
+	s.bridge = bridge
+
+	return &proto.SetupNetworkResponse{}, nil
 }
 
 func (s *serviceImpl) Cleanup(ctx context.Context, req *proto.CleanupNetworkRequest) (*proto.CleanupNetworkResponse, error) {
-	err := Cleanup(int(req.NumVMs))
+	err := Cleanup(s.bridge)
 	if err != nil {
 		return nil, err
 	}

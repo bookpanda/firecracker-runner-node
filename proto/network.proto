@@ -9,19 +9,13 @@ service NetworkService {
   rpc Cleanup(CleanupNetworkRequest) returns (CleanupNetworkResponse){}
 }
 
-message Tap{
-  string ip = 1;
-  string nodeIp = 2;
-  string mac = 3;
-  string tapName = 4;
-}
-
 message SetupNetworkRequest{
-  int32 numVMs = 1;
+  string subnet = 1;
+  string bridgeIP = 2;
+  int32 numVMs = 3;
 }
 
 message SetupNetworkResponse{
-  repeated Tap taps = 1;
 }
 
 message CleanupNetworkRequest{
