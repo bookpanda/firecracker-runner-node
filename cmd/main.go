@@ -23,7 +23,7 @@ func main() {
 
 	logger := zap.Must(zap.NewDevelopment())
 
-	countRepo := count.NewRepository(db)
+	countRepo := network.NewRepository(db)
 	countSvc := count.NewService(countRepo, logger.Named("countSvc"))
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%v", conf.Port))

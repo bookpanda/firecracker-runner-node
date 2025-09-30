@@ -1,16 +1,16 @@
 package vm
 
 import (
-	proto "github.com/bookpanda/firecracker-runner-node/proto/vm/v1"
+	proto "github.com/bookpanda/firecracker-runner-node/proto/network/v1"
 	"go.uber.org/zap"
 )
 
 type Service interface {
-	proto.VmServiceServer
+	proto.NetworkServiceServer
 }
 
 type serviceImpl struct {
-	proto.UnimplementedVmServiceServer
+	proto.UnimplementedNetworkServiceServer
 	log *zap.Logger
 }
 

@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package runner.vm.v1;
+package proto.vm.v1;
 
-option go_package = "runner/vm/v1";
+option go_package = "proto/vm/v1";
 
 service VmService {
   rpc Create(CreateVmRequest) returns (CreateVmResponse){}
