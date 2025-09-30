@@ -7,6 +7,7 @@ option go_package = "proto/vm/v1";
 service VmService {
   rpc Create(CreateVmRequest) returns (CreateVmResponse){}
   rpc SendCommand(SendCommandVmRequest) returns (SendCommandVmResponse){}
+  rpc GetLogs(GetLogsVmRequest) returns (GetLogsVmResponse){} // transport via scp
 }
 
 message Vm{
@@ -33,4 +34,11 @@ message SendCommandVmRequest{
 
 message SendCommandVmResponse{
   string output = 1;
+}
+
+message GetLogsVmRequest{
+  string ip = 1;
+}
+
+message GetLogsVmResponse{
 }
