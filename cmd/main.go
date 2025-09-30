@@ -11,6 +11,10 @@ import (
 	"time"
 
 	"github.com/bookpanda/firecracker-runner-node/internal/config"
+	"github.com/bookpanda/firecracker-runner-node/internal/network"
+	"github.com/bookpanda/firecracker-runner-node/internal/vm"
+	networkProto "github.com/bookpanda/firecracker-runner-node/proto/network/v1"
+	vmProto "github.com/bookpanda/firecracker-runner-node/proto/vm/v1"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
@@ -23,8 +27,8 @@ func main() {
 
 	logger := zap.Must(zap.NewDevelopment())
 
-	countRepo := network.NewRepository(db)
-	countSvc := count.NewService(countRepo, logger.Named("countSvc"))
+	vmSvc := vm.NewService(logger.Named("vmSvc"))
+	networkSvc := network.NewService(logger.Named("networkSvc"))
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%v", conf.Port))
 	if err != nil {
@@ -33,15 +37,12 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 	grpc_health_v1.RegisterHealthServer(grpcServer, health.NewServer())
-	pinProto.RegisterPinServiceServer(grpcServer, pinSvc)
-	stampProto.RegisterStampServiceServer(grpcServer, stampSvc)
-	groupProto.RegisterGroupServiceServer(grpcServer, groupSvc)
-	selectionProto.RegisterSelectionServiceServer(grpcServer, selectionSvc)
-	countProto.RegisterCountServiceServer(grpcServer, countSvc)
+	vmProto.RegisterVmServiceServer(grpcServer, vmSvc)
+	networkProto.RegisterNetworkServiceServer(grpcServer, networkSvc)
 
 	reflection.Register(grpcServer)
 	go func() {
-		logger.Sugar().Infof("RPKM67 Backend starting at port %v", conf.App.Port)
+		logger.Sugar().Infof("RPKM67 Backend starting at port %v", conf.Port)
 
 		if err := grpcServer.Serve(listener); err != nil {
 			logger.Fatal("Failed to start RPKM67 Backend service", zap.Error(err))
@@ -60,7 +61,7 @@ func main() {
 	grpcServer.GracefulStop()
 	logger.Info("Closing the listener")
 	listener.Close()
-	logger.Info("RPKM67 Backend service has been shutdown gracefully")
+	logger.Info("Firecracker Runner service has been shutdown gracefully")
 }
 
 type operation func(ctx context.Context) error

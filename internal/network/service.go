@@ -1,4 +1,4 @@
-package vm
+package network
 
 import (
 	proto "github.com/bookpanda/firecracker-runner-node/proto/network/v1"
