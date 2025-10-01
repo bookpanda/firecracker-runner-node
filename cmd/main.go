@@ -11,8 +11,10 @@ import (
 	"time"
 
 	"github.com/bookpanda/firecracker-runner-node/internal/config"
+	"github.com/bookpanda/firecracker-runner-node/internal/filesystem"
 	"github.com/bookpanda/firecracker-runner-node/internal/network"
 	"github.com/bookpanda/firecracker-runner-node/internal/vm"
+	filesystemProto "github.com/bookpanda/firecracker-runner-node/proto/filesystem/v1"
 	networkProto "github.com/bookpanda/firecracker-runner-node/proto/network/v1"
 	vmProto "github.com/bookpanda/firecracker-runner-node/proto/vm/v1"
 	"go.uber.org/zap"
@@ -30,6 +32,7 @@ func main() {
 	vmManager := vm.NewManager(conf)
 	vmSvc := vm.NewService(vmManager, logger.Named("vmSvc"))
 	networkSvc := network.NewService(logger.Named("networkSvc"))
+	filesystemSvc := filesystem.NewService(logger.Named("filesystemSvc"))
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%v", conf.Port))
 	if err != nil {
@@ -40,6 +43,7 @@ func main() {
 	grpc_health_v1.RegisterHealthServer(grpcServer, health.NewServer())
 	vmProto.RegisterVmServiceServer(grpcServer, vmSvc)
 	networkProto.RegisterNetworkServiceServer(grpcServer, networkSvc)
+	filesystemProto.RegisterFileSystemServiceServer(grpcServer, filesystemSvc)
 
 	reflection.Register(grpcServer)
 	go func() {
