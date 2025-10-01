@@ -47,10 +47,10 @@ func main() {
 
 	reflection.Register(grpcServer)
 	go func() {
-		logger.Sugar().Infof("RPKM67 Backend starting at port %v", conf.Port)
+		logger.Sugar().Infof("Firecracker Runner starting at port %v", conf.Port)
 
 		if err := grpcServer.Serve(listener); err != nil {
-			logger.Fatal("Failed to start RPKM67 Backend service", zap.Error(err))
+			logger.Fatal("Failed to start Firecracker Runner service", zap.Error(err))
 		}
 	}()
 

@@ -10,16 +10,14 @@ service NetworkService {
 }
 
 message SetupNetworkRequest{
-  string subnet = 1;
-  string bridgeIP = 2;
-  int32 numVMs = 3;
+  string bridgeIP = 1;
+  int32 numVMs = 2;
 }
 
 message SetupNetworkResponse{
 }
 
 message CleanupNetworkRequest{
-  int32 numVMs = 1;
 }
 
 message CleanupNetworkResponse{
