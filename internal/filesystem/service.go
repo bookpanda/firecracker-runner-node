@@ -24,7 +24,7 @@ func NewService(log *zap.Logger) Service {
 }
 
 func (s *serviceImpl) Cleanup(ctx context.Context, req *proto.CleanupFileSystemRequest) (*proto.CleanupFileSystemResponse, error) {
-	logDirs := []string{"./vm-experiment-logs", "./vm-logs", "./vm-syscalls"}
+	logDirs := []string{"./vm-test", "./vm-logs", "./vm-syscalls"}
 	for _, logDir := range logDirs {
 		if err := GetEmptyLogDir(logDir); err != nil {
 			return nil, fmt.Errorf("failed to create log directory: %v", err)

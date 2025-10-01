@@ -34,6 +34,10 @@ func (s *serviceImpl) Create(_ context.Context, req *proto.CreateVmRequest) (*pr
 }
 
 func (s *serviceImpl) SendCommand(_ context.Context, req *proto.SendCommandVmRequest) (*proto.SendCommandVmResponse, error) {
+	if err := s.manager.SendCommand(req.Ip, req.Command); err != nil {
+		return nil, err
+	}
+
 	return &proto.SendCommandVmResponse{}, nil
 }
 

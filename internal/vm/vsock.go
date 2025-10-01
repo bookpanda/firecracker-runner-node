@@ -45,7 +45,7 @@ func streamCommandVsock(ctx context.Context, sockPath string, port uint32, cmd s
 	}
 }
 
-func (m *Manager) captureCommandOutputVsock(ctx context.Context, sockPath string, port uint32, command, logPath string, wait bool) error {
+func (m *Manager) captureCommandOutputVsock(sockPath string, port uint32, command, logPath string, wait bool) error {
 	logFile, err := os.Create(logPath)
 	if err != nil {
 		return fmt.Errorf("failed to create log file %s: %v", logPath, err)
@@ -68,7 +68,7 @@ func (m *Manager) captureCommandOutputVsock(ctx context.Context, sockPath string
 
 		if wait {
 			// For commands that should complete (like clients)
-			err := streamCommandVsock(ctx, sockPath, port, command, outputWriter)
+			err := streamCommandVsock(m.vmCtx, sockPath, port, command, outputWriter)
 			if err != nil {
 				logFile.WriteString(fmt.Sprintf("Error: %v\n", err))
 				log.Printf("VM %s %d: command failed: %v", sockPath, port, err)
@@ -77,7 +77,7 @@ func (m *Manager) captureCommandOutputVsock(ctx context.Context, sockPath string
 			}
 		} else {
 			// For long-running commands (like servers)
-			err := streamCommandVsock(ctx, sockPath, port, command, outputWriter)
+			err := streamCommandVsock(m.vmCtx, sockPath, port, command, outputWriter)
 			if err != nil && err != context.Canceled {
 				logFile.WriteString(fmt.Sprintf("Error: %v\n", err))
 				log.Printf("VM %s %d: command failed: %v", sockPath, port, err)

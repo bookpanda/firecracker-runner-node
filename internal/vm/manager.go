@@ -74,11 +74,13 @@ func (m *Manager) LogNetworkingInfo() {
 func (m *Manager) SendCommand(ip, command string) error {
 	vm, ok := m.vms[ip]
 	if !ok {
+		log.Printf("vm %s not found", ip)
 		return fmt.Errorf("vm %s not found", ip)
 	}
 	logPath := filepath.Join(m.testDir, fmt.Sprintf("vm-%s.log", vm.IP))
 
-	if err := m.captureCommandOutputVsock(m.vmCtx, vm.VsockPath, vm.VsockCID, command, logPath, false); err != nil {
+	if err := m.captureCommandOutputVsock(vm.VsockPath, 1234, command, logPath, false); err != nil {
+		log.Printf("failed to send command to vm %s: %v", vm.IP, err)
 		return fmt.Errorf("failed to send command to vm %s: %v", vm.IP, err)
 	}
 

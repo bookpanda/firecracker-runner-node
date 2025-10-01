@@ -2,7 +2,7 @@ main
 a.out
 local.md
 
-vm-experiment-logs
+vm-test
 vm-logs
 vm-syscalls
 *.ext4
