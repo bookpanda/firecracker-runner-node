@@ -21,7 +21,6 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	VmService_Create_FullMethodName      = "/proto.vm.v1.VmService/Create"
 	VmService_SendCommand_FullMethodName = "/proto.vm.v1.VmService/SendCommand"
-	VmService_GetLogs_FullMethodName     = "/proto.vm.v1.VmService/GetLogs"
 )
 
 // VmServiceClient is the client API for VmService service.
@@ -30,7 +29,6 @@ const (
 type VmServiceClient interface {
 	Create(ctx context.Context, in *CreateVmRequest, opts ...grpc.CallOption) (*CreateVmResponse, error)
 	SendCommand(ctx context.Context, in *SendCommandVmRequest, opts ...grpc.CallOption) (*SendCommandVmResponse, error)
-	GetLogs(ctx context.Context, in *GetLogsVmRequest, opts ...grpc.CallOption) (*GetLogsVmResponse, error)
 }
 
 type vmServiceClient struct {
@@ -59,22 +57,12 @@ func (c *vmServiceClient) SendCommand(ctx context.Context, in *SendCommandVmRequ
 	return out, nil
 }
 
-func (c *vmServiceClient) GetLogs(ctx context.Context, in *GetLogsVmRequest, opts ...grpc.CallOption) (*GetLogsVmResponse, error) {
-	out := new(GetLogsVmResponse)
-	err := c.cc.Invoke(ctx, VmService_GetLogs_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // VmServiceServer is the server API for VmService service.
 // All implementations must embed UnimplementedVmServiceServer
 // for forward compatibility
 type VmServiceServer interface {
 	Create(context.Context, *CreateVmRequest) (*CreateVmResponse, error)
 	SendCommand(context.Context, *SendCommandVmRequest) (*SendCommandVmResponse, error)
-	GetLogs(context.Context, *GetLogsVmRequest) (*GetLogsVmResponse, error)
 	mustEmbedUnimplementedVmServiceServer()
 }
 
@@ -87,9 +75,6 @@ func (UnimplementedVmServiceServer) Create(context.Context, *CreateVmRequest) (*
 }
 func (UnimplementedVmServiceServer) SendCommand(context.Context, *SendCommandVmRequest) (*SendCommandVmResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendCommand not implemented")
-}
-func (UnimplementedVmServiceServer) GetLogs(context.Context, *GetLogsVmRequest) (*GetLogsVmResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetLogs not implemented")
 }
 func (UnimplementedVmServiceServer) mustEmbedUnimplementedVmServiceServer() {}
 
@@ -140,24 +125,6 @@ func _VmService_SendCommand_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VmService_GetLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetLogsVmRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(VmServiceServer).GetLogs(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: VmService_GetLogs_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VmServiceServer).GetLogs(ctx, req.(*GetLogsVmRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // VmService_ServiceDesc is the grpc.ServiceDesc for VmService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -172,10 +139,6 @@ var VmService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendCommand",
 			Handler:    _VmService_SendCommand_Handler,
-		},
-		{
-			MethodName: "GetLogs",
-			Handler:    _VmService_GetLogs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

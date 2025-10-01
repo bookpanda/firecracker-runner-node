@@ -19,6 +19,8 @@ import (
 
 type SimplifiedVM struct {
 	Machine    *firecracker.Machine
+	KernelPath string
+	RootfsPath string
 	SocketPath string
 	VsockPath  string
 	VsockCID   uint32
@@ -118,8 +120,7 @@ func (v *SimplifiedVM) killFirecrackerProcess() error {
 	return nil
 }
 
-func CreateVM(ctx context.Context, kernelPath, rootfsPath string, vmIndex int) (*SimplifiedVM, error) {
-	ip := fmt.Sprintf("192.168.100.%d", vmIndex+2)
+func CreateVM(ctx context.Context, ip, kernelPath, rootfsPath string, vmIndex int) (*SimplifiedVM, error) {
 	socketPath := filepath.Join(os.TempDir(), fmt.Sprintf("vm-%s.sock", ip))
 	vsockPath := filepath.Join(os.TempDir(), fmt.Sprintf("vsock-%s.sock", ip))
 	cid := uint32(vmIndex + 3)
@@ -202,6 +203,8 @@ func CreateVM(ctx context.Context, kernelPath, rootfsPath string, vmIndex int) (
 
 	return &SimplifiedVM{
 		Machine:    machine,
+		KernelPath: kernelPath,
+		RootfsPath: rootfsPath,
 		SocketPath: socketPath,
 		VsockPath:  vsockPath,
 		VsockCID:   cid,

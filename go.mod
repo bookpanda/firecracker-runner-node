@@ -5,7 +5,6 @@ go 1.23.7
 toolchain go1.24.7
 
 require (
-	github.com/bookpanda/microvm-networking/benchmark v0.0.0-20250930101759-17ebbb83e8dc
 	github.com/firecracker-microvm/firecracker-go-sdk v1.0.0
 	go.uber.org/zap v1.27.0
 	google.golang.org/grpc v1.75.1

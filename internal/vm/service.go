@@ -13,23 +13,25 @@ type Service interface {
 
 type serviceImpl struct {
 	proto.UnimplementedVmServiceServer
-	log *zap.Logger
+	manager *Manager
+	log     *zap.Logger
 }
 
-func NewService(log *zap.Logger) Service {
+func NewService(manager *Manager, log *zap.Logger) Service {
 	return &serviceImpl{
-		log: log,
+		manager: manager,
+		log:     log,
 	}
 }
 
 func (s *serviceImpl) Create(ctx context.Context, req *proto.CreateVmRequest) (*proto.CreateVmResponse, error) {
-	return nil, nil
+	vm, err := s.manager.CreateVM(ctx, req.Ip, req.KernelPath, req.RootfsPath)
+	if err != nil {
+		return nil, err
+	}
+	return &proto.CreateVmResponse{Vm: &proto.Vm{Ip: vm.IP, KernelPath: vm.KernelPath, RootfsPath: vm.RootfsPath}}, nil
 }
 
 func (s *serviceImpl) SendCommand(ctx context.Context, req *proto.SendCommandVmRequest) (*proto.SendCommandVmResponse, error) {
-	return nil, nil
-}
-
-func (s *serviceImpl) GetLogs(ctx context.Context, req *proto.GetLogsVmRequest) (*proto.GetLogsVmResponse, error) {
 	return nil, nil
 }

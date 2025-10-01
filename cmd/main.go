@@ -27,7 +27,8 @@ func main() {
 
 	logger := zap.Must(zap.NewDevelopment())
 
-	vmSvc := vm.NewService(logger.Named("vmSvc"))
+	vmManager := vm.NewManager(conf)
+	vmSvc := vm.NewService(vmManager, logger.Named("vmSvc"))
 	networkSvc := network.NewService(logger.Named("networkSvc"))
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%v", conf.Port))
