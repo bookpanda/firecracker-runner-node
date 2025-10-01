@@ -8,18 +8,16 @@ import (
 )
 
 type Bridge struct {
-	Name   string
-	IP     string
-	Subnet string
-	Taps   []string
+	Name string
+	IP   string
+	Taps []string
 }
 
-func NewBridge(name, ip, subnet string) *Bridge {
+func NewBridge(name, ip string) *Bridge {
 	return &Bridge{
-		Name:   name,
-		IP:     ip,
-		Subnet: subnet,
-		Taps:   make([]string, 0),
+		Name: name,
+		IP:   ip,
+		Taps: make([]string, 0),
 	}
 }
 
@@ -57,6 +55,7 @@ func (b *Bridge) AddTapAndBringUp(tapName string) error {
 		return fmt.Errorf("failed to bring up %s: %v", tapName, err)
 	}
 
+	log.Printf("Added tap %s to bridge %s", tapName, b.Name)
 	b.Taps = append(b.Taps, tapName)
 
 	return nil

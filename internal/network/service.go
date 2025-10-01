@@ -19,13 +19,13 @@ type serviceImpl struct {
 
 func NewService(log *zap.Logger) Service {
 	return &serviceImpl{
-		bridge: NewBridge("", "", ""),
+		bridge: NewBridge("", ""),
 		log:    log,
 	}
 }
 
 func (s *serviceImpl) Setup(ctx context.Context, req *proto.SetupNetworkRequest) (*proto.SetupNetworkResponse, error) {
-	bridge, err := Setup(int(req.NumVMs), req.Subnet, req.BridgeIP)
+	bridge, err := Setup(int(req.NumVMs), req.BridgeIP)
 	if err != nil {
 		return nil, err
 	}

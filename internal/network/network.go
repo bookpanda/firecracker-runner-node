@@ -6,8 +6,8 @@ import (
 	"os/exec"
 )
 
-func Setup(numVMs int, subnet string, bridgeIP string) (*Bridge, error) {
-	bridge := NewBridge("br0", bridgeIP, subnet)
+func Setup(numVMs int, bridgeIP string) (*Bridge, error) {
+	bridge := NewBridge("br0", bridgeIP)
 	err := bridge.Setup()
 	if err != nil {
 		return nil, fmt.Errorf("failed to setup bridge: %v", err)
