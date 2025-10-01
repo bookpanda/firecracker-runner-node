@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package proto.filesystem.v1;
+
+option go_package = "proto/filesystem/v1";
+
+service FileSystemService {
+  rpc Cleanup(CleanupFileSystemRequest) returns (CleanupFileSystemResponse){}
+  rpc GetLogs(GetLogsFileSystemRequest) returns (GetLogsFileSystemResponse){} // transport via scp
+}
+
+
+
+message CleanupFileSystemRequest{
+}
+
+message CleanupFileSystemResponse{
+}
+
+message GetLogsFileSystemRequest{
+  string ip = 1;
+}
+
+message GetLogsFileSystemResponse{
+}
