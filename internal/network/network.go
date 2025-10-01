@@ -55,13 +55,21 @@ func setupIptables(bridge *Bridge) {
 	}
 }
 
-func Cleanup(bridge *Bridge) error {
+func Cleanup(numVMs int) error {
 	log.Printf("Cleaning up networking...")
-	err := bridge.Cleanup()
-	if err != nil {
-		return fmt.Errorf("failed to cleanup networking: %v", err)
+	for i := 0; i < numVMs; i++ {
+		tapName := fmt.Sprintf("tap%d", i)
+		cmd := exec.Command("sudo", "ip", "link", "delete", tapName)
+		if err := cmd.Run(); err != nil {
+			log.Printf("failed to delete tap interface %s: %v, might already be deleted", tapName, err)
+		}
 	}
-	log.Println("Networking cleanup completed")
 
+	cmd := exec.Command("sudo", "ip", "link", "delete", "br0")
+	if err := cmd.Run(); err != nil {
+		log.Printf("failed to delete bridge: %v, might already be deleted", err)
+	}
+
+	log.Println("Networking cleanup completed")
 	return nil
 }

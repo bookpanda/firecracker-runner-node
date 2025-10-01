@@ -60,19 +60,3 @@ func (b *Bridge) AddTapAndBringUp(tapName string) error {
 
 	return nil
 }
-
-func (b *Bridge) Cleanup() error {
-	for _, tapName := range b.Taps {
-		cmd := exec.Command("sudo", "ip", "link", "delete", tapName)
-		if err := cmd.Run(); err != nil {
-			return fmt.Errorf("failed to delete tap interface %s: %v", tapName, err)
-		}
-	}
-
-	cmd := exec.Command("sudo", "ip", "link", "delete", "br0")
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("failed to delete bridge: %v", err)
-	}
-
-	return nil
-}

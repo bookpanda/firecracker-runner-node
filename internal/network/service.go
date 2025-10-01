@@ -36,7 +36,7 @@ func (s *serviceImpl) Setup(ctx context.Context, req *proto.SetupNetworkRequest)
 }
 
 func (s *serviceImpl) Cleanup(ctx context.Context, req *proto.CleanupNetworkRequest) (*proto.CleanupNetworkResponse, error) {
-	err := Cleanup(s.bridge)
+	err := Cleanup(int(req.NumVMs))
 	if err != nil {
 		return nil, err
 	}
