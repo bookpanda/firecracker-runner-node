@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	VmService_Create_FullMethodName      = "/proto.vm.v1.VmService/Create"
-	VmService_SendCommand_FullMethodName = "/proto.vm.v1.VmService/SendCommand"
+	VmService_Create_FullMethodName        = "/proto.vm.v1.VmService/Create"
+	VmService_SendCommand_FullMethodName   = "/proto.vm.v1.VmService/SendCommand"
+	VmService_TrackSyscalls_FullMethodName = "/proto.vm.v1.VmService/TrackSyscalls"
 )
 
 // VmServiceClient is the client API for VmService service.
@@ -29,6 +30,7 @@ const (
 type VmServiceClient interface {
 	Create(ctx context.Context, in *CreateVmRequest, opts ...grpc.CallOption) (*CreateVmResponse, error)
 	SendCommand(ctx context.Context, in *SendCommandVmRequest, opts ...grpc.CallOption) (*SendCommandVmResponse, error)
+	TrackSyscalls(ctx context.Context, in *TrackSyscallsVmRequest, opts ...grpc.CallOption) (*TrackSyscallsVmResponse, error)
 }
 
 type vmServiceClient struct {
@@ -57,12 +59,22 @@ func (c *vmServiceClient) SendCommand(ctx context.Context, in *SendCommandVmRequ
 	return out, nil
 }
 
+func (c *vmServiceClient) TrackSyscalls(ctx context.Context, in *TrackSyscallsVmRequest, opts ...grpc.CallOption) (*TrackSyscallsVmResponse, error) {
+	out := new(TrackSyscallsVmResponse)
+	err := c.cc.Invoke(ctx, VmService_TrackSyscalls_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VmServiceServer is the server API for VmService service.
 // All implementations must embed UnimplementedVmServiceServer
 // for forward compatibility
 type VmServiceServer interface {
 	Create(context.Context, *CreateVmRequest) (*CreateVmResponse, error)
 	SendCommand(context.Context, *SendCommandVmRequest) (*SendCommandVmResponse, error)
+	TrackSyscalls(context.Context, *TrackSyscallsVmRequest) (*TrackSyscallsVmResponse, error)
 	mustEmbedUnimplementedVmServiceServer()
 }
 
@@ -75,6 +87,9 @@ func (UnimplementedVmServiceServer) Create(context.Context, *CreateVmRequest) (*
 }
 func (UnimplementedVmServiceServer) SendCommand(context.Context, *SendCommandVmRequest) (*SendCommandVmResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendCommand not implemented")
+}
+func (UnimplementedVmServiceServer) TrackSyscalls(context.Context, *TrackSyscallsVmRequest) (*TrackSyscallsVmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TrackSyscalls not implemented")
 }
 func (UnimplementedVmServiceServer) mustEmbedUnimplementedVmServiceServer() {}
 
@@ -125,6 +140,24 @@ func _VmService_SendCommand_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VmService_TrackSyscalls_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TrackSyscallsVmRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VmServiceServer).TrackSyscalls(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VmService_TrackSyscalls_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VmServiceServer).TrackSyscalls(ctx, req.(*TrackSyscallsVmRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // VmService_ServiceDesc is the grpc.ServiceDesc for VmService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +172,10 @@ var VmService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendCommand",
 			Handler:    _VmService_SendCommand_Handler,
+		},
+		{
+			MethodName: "TrackSyscalls",
+			Handler:    _VmService_TrackSyscalls_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
