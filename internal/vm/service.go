@@ -2,6 +2,7 @@ package vm
 
 import (
 	"context"
+	"os/exec"
 
 	proto "github.com/bookpanda/firecracker-runner-node/proto/vm/v1"
 	"go.uber.org/zap"
@@ -24,22 +25,33 @@ func NewService(manager *Manager, log *zap.Logger) Service {
 	}
 }
 
-func (s *serviceImpl) Create(ctx context.Context, req *proto.CreateVmRequest) (*proto.CreateVmResponse, error) {
-	vm, err := s.manager.CreateVM(ctx, req.Ip, req.KernelPath, req.RootfsPath)
+func (s *serviceImpl) Create(_ context.Context, req *proto.CreateVmRequest) (*proto.CreateVmResponse, error) {
+	vm, err := s.manager.CreateVM(req.Ip, req.KernelPath, req.RootfsPath)
 	if err != nil {
 		return nil, err
 	}
 	return &proto.CreateVmResponse{Vm: &proto.Vm{Ip: vm.IP, KernelPath: vm.KernelPath, RootfsPath: vm.RootfsPath}}, nil
 }
 
-func (s *serviceImpl) SendCommand(ctx context.Context, req *proto.SendCommandVmRequest) (*proto.SendCommandVmResponse, error) {
+func (s *serviceImpl) SendCommand(_ context.Context, req *proto.SendCommandVmRequest) (*proto.SendCommandVmResponse, error) {
 	return &proto.SendCommandVmResponse{}, nil
 }
 
-func (s *serviceImpl) TrackSyscalls(ctx context.Context, req *proto.TrackSyscallsVmRequest) (*proto.TrackSyscallsVmResponse, error) {
-	if err := s.manager.TrackSyscalls(ctx); err != nil {
+func (s *serviceImpl) TrackSyscalls(_ context.Context, req *proto.TrackSyscallsVmRequest) (*proto.TrackSyscallsVmResponse, error) {
+	if err := s.manager.TrackSyscalls(); err != nil {
 		return nil, err
 	}
 
 	return &proto.TrackSyscallsVmResponse{}, nil
+}
+
+func (s *serviceImpl) Cleanup(_ context.Context, req *proto.CleanupVmRequest) (*proto.CleanupVmResponse, error) {
+	cmd := exec.Command("sudo", "pkill", "-f", "firecracker")
+	if err := cmd.Run(); err != nil {
+		return nil, err
+	}
+
+	s.manager = NewManager(s.manager.config, s.manager.vmCtx)
+
+	return &proto.CleanupVmResponse{}, nil
 }

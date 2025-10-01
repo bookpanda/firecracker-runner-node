@@ -28,8 +28,10 @@ func main() {
 	conf := config.ParseFlags()
 
 	logger := zap.Must(zap.NewDevelopment())
+	vmCtx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	vmManager := vm.NewManager(conf)
+	vmManager := vm.NewManager(conf, vmCtx)
 	vmSvc := vm.NewService(vmManager, logger.Named("vmSvc"))
 	networkSvc := network.NewService(logger.Named("networkSvc"))
 	filesystemSvc := filesystem.NewService(logger.Named("filesystemSvc"))

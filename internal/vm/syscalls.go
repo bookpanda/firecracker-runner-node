@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func (m *Manager) TrackSyscalls(ctx context.Context) error {
+func (m *Manager) TrackSyscalls() error {
 	tracePath, err := os.Getwd()
 	if err != nil {
 		return fmt.Errorf("failed to get working directory: %v", err)
@@ -26,7 +26,7 @@ func (m *Manager) TrackSyscalls(ctx context.Context) error {
 
 		command := fmt.Sprintf("sudo %s %d", tracePath, pid)
 		logPath := filepath.Join(m.syscallsDir, fmt.Sprintf("vm-%s.log", vm.IP))
-		if err := captureCommandOutput(ctx, vm.IP, command, logPath, false); err != nil {
+		if err := captureCommandOutput(m.vmCtx, vm.IP, command, logPath, false); err != nil {
 			return fmt.Errorf("failed to track syscalls of vm %s: %v", vm.IP, err)
 		}
 	}

@@ -8,6 +8,7 @@ service VmService {
   rpc Create(CreateVmRequest) returns (CreateVmResponse){}
   rpc SendCommand(SendCommandVmRequest) returns (SendCommandVmResponse){}
   rpc TrackSyscalls(TrackSyscallsVmRequest) returns (TrackSyscallsVmResponse){}
+  rpc Cleanup(CleanupVmRequest) returns (CleanupVmResponse){}
 }
 
 message Vm{
@@ -39,4 +40,10 @@ message TrackSyscallsVmRequest{
 }
 
 message TrackSyscallsVmResponse{
+}
+
+message CleanupVmRequest{
+}
+
+message CleanupVmResponse{
 }
