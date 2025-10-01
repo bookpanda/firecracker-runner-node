@@ -4,12 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"path/filepath"
 	"sync"
 
 	"github.com/bookpanda/firecracker-runner-node/internal/config"
-	"github.com/bookpanda/firecracker-runner-node/internal/vm/trace"
 )
 
 type Manager struct {
@@ -17,6 +15,7 @@ type Manager struct {
 	vms         map[string]*SimplifiedVM
 	wg          sync.WaitGroup
 	syscallsDir string
+	testDir     string
 }
 
 func NewManager(cfg *config.Config) *Manager {
@@ -24,6 +23,7 @@ func NewManager(cfg *config.Config) *Manager {
 		config:      cfg,
 		vms:         make(map[string]*SimplifiedVM),
 		syscallsDir: "./vm-syscalls",
+		testDir:     "./vm-test",
 	}
 }
 
@@ -65,24 +65,16 @@ func (m *Manager) LogNetworkingInfo() {
 	}
 }
 
-func (m *Manager) TrackSyscalls(ctx context.Context, ip string) error {
-	tracePath, err := os.Getwd()
-	if err != nil {
-		return fmt.Errorf("failed to get working directory: %v", err)
+func (m *Manager) SendCommand(ctx context.Context, ip, command string) error {
+	vm, ok := m.vms[ip]
+	if !ok {
+		return fmt.Errorf("vm %s not found", ip)
 	}
-	tracePath = filepath.Join(tracePath, "trace_syscalls.sh")
+	logPath := filepath.Join(m.testDir, fmt.Sprintf("vm-%s.log", vm.IP))
 
-	for _, vm := range m.vms {
-		pid, err := vm.Machine.PID()
-		if err != nil {
-			return fmt.Errorf("failed to get vm %s PID: %v", vm.IP, err)
-		}
-
-		command := fmt.Sprintf("sudo %s %d", tracePath, pid)
-		logPath := filepath.Join(m.syscallsDir, fmt.Sprintf("vm-%s.log", vm.IP))
-		if err := trace.TrackSyscalls(ctx, vm.IP, command, logPath, false); err != nil {
-			return fmt.Errorf("failed to track syscalls of vm %s: %v", vm.IP, err)
-		}
+	if err := m.captureCommandOutputVsock(ctx, vm.VsockPath, vm.VsockCID, command, logPath, false); err != nil {
+		return fmt.Errorf("failed to send command to vm %s: %v", vm.IP, err)
 	}
+
 	return nil
 }

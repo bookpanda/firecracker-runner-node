@@ -33,5 +33,13 @@ func (s *serviceImpl) Create(ctx context.Context, req *proto.CreateVmRequest) (*
 }
 
 func (s *serviceImpl) SendCommand(ctx context.Context, req *proto.SendCommandVmRequest) (*proto.SendCommandVmResponse, error) {
-	return nil, nil
+	return &proto.SendCommandVmResponse{}, nil
+}
+
+func (s *serviceImpl) TrackSyscalls(ctx context.Context, req *proto.TrackSyscallsVmRequest) (*proto.TrackSyscallsVmResponse, error) {
+	if err := s.manager.TrackSyscalls(ctx); err != nil {
+		return nil, err
+	}
+
+	return &proto.TrackSyscallsVmResponse{}, nil
 }

@@ -1,4 +1,4 @@
-package trace
+package vm
 
 import (
 	"bufio"
@@ -7,10 +7,33 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
-func TrackSyscalls(ctx context.Context, vmIP, command, logPath string, wait bool) error {
+func (m *Manager) TrackSyscalls(ctx context.Context) error {
+	tracePath, err := os.Getwd()
+	if err != nil {
+		return fmt.Errorf("failed to get working directory: %v", err)
+	}
+	tracePath = filepath.Join(tracePath, "trace_syscalls.sh")
+
+	for _, vm := range m.vms {
+		pid, err := vm.Machine.PID()
+		if err != nil {
+			return fmt.Errorf("failed to get vm %s PID: %v", vm.IP, err)
+		}
+
+		command := fmt.Sprintf("sudo %s %d", tracePath, pid)
+		logPath := filepath.Join(m.syscallsDir, fmt.Sprintf("vm-%s.log", vm.IP))
+		if err := captureCommandOutput(ctx, vm.IP, command, logPath, false); err != nil {
+			return fmt.Errorf("failed to track syscalls of vm %s: %v", vm.IP, err)
+		}
+	}
+	return nil
+}
+
+func captureCommandOutput(ctx context.Context, vmIP, command, logPath string, wait bool) error {
 	logFile, err := os.Create(logPath)
 	if err != nil {
 		return fmt.Errorf("failed to create log file %s: %v", logPath, err)

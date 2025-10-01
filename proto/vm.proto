@@ -36,7 +36,6 @@ message SendCommandVmResponse{
 }
 
 message TrackSyscallsVmRequest{
-  string ip = 1;
 }
 
 message TrackSyscallsVmResponse{
