@@ -26,14 +26,14 @@ func (m *Manager) TrackSyscalls() error {
 
 		command := fmt.Sprintf("sudo %s %d", tracePath, pid)
 		logPath := filepath.Join(m.syscallsDir, fmt.Sprintf("vm-%s.log", vm.IP))
-		if err := captureCommandOutput(m.vmCtx, vm.IP, command, logPath, false); err != nil {
+		if err := captureCommandOutput(m.vmCtx, vm.IP, command, logPath); err != nil {
 			return fmt.Errorf("failed to track syscalls of vm %s: %v", vm.IP, err)
 		}
 	}
 	return nil
 }
 
-func captureCommandOutput(ctx context.Context, vmIP, command, logPath string, wait bool) error {
+func captureCommandOutput(ctx context.Context, vmIP, command, logPath string) error {
 	logFile, err := os.Create(logPath)
 	if err != nil {
 		return fmt.Errorf("failed to create log file %s: %v", logPath, err)

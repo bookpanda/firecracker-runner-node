@@ -67,7 +67,7 @@ func (m *Manager) LogNetworkingInfo() {
 	log.Printf("All %d VMs started successfully", len(m.vms))
 	log.Println("VM networking setup:")
 	for ip, vm := range m.vms {
-		log.Printf("  VM %d: tap%d, MAC: AA:FC:00:00:00:%02X, IP: %s/24", ip, vm.VMID, vm.VMID+1, vm.IP)
+		log.Printf("  VM %s: tap%d, MAC: AA:FC:00:00:00:%02X, IP: %s/24", ip, vm.VMID, vm.VMID+1, vm.IP)
 	}
 }
 
