@@ -640,11 +640,11 @@ const file_proto_vm_proto_rawDesc = "" +
 	"\x15StopSyscallsVmRequest\"\x18\n" +
 	"\x16StopSyscallsVmResponse\"\x12\n" +
 	"\x10CleanupVmRequest\"\x13\n" +
-	"\x11CleanupVmResponse2\x9b\x04\n" +
+	"\x11CleanupVmResponse2\x9d\x04\n" +
 	"\tVmService\x12G\n" +
 	"\x06Create\x12\x1c.proto.vm.v1.CreateVmRequest\x1a\x1d.proto.vm.v1.CreateVmResponse\"\x00\x12V\n" +
-	"\vSendCommand\x12!.proto.vm.v1.SendCommandVmRequest\x1a\".proto.vm.v1.SendCommandVmResponse\"\x00\x12h\n" +
-	"\x11SendClientCommand\x12'.proto.vm.v1.SendClientCommandVmRequest\x1a(.proto.vm.v1.SendClientCommandVmResponse\"\x00\x12\\\n" +
+	"\vSendCommand\x12!.proto.vm.v1.SendCommandVmRequest\x1a\".proto.vm.v1.SendCommandVmResponse\"\x00\x12j\n" +
+	"\x11SendClientCommand\x12'.proto.vm.v1.SendClientCommandVmRequest\x1a(.proto.vm.v1.SendClientCommandVmResponse\"\x000\x01\x12\\\n" +
 	"\rTrackSyscalls\x12#.proto.vm.v1.TrackSyscallsVmRequest\x1a$.proto.vm.v1.TrackSyscallsVmResponse\"\x00\x12Y\n" +
 	"\fStopSyscalls\x12\".proto.vm.v1.StopSyscallsVmRequest\x1a#.proto.vm.v1.StopSyscallsVmResponse\"\x00\x12J\n" +
 	"\aCleanup\x12\x1d.proto.vm.v1.CleanupVmRequest\x1a\x1e.proto.vm.v1.CleanupVmResponse\"\x00B\rZ\vproto/vm/v1b\x06proto3"

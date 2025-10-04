@@ -6,6 +6,7 @@ import (
 
 	proto "github.com/bookpanda/firecracker-runner-node/proto/vm/v1"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
 )
 
 type Service interface {
@@ -41,12 +42,17 @@ func (s *serviceImpl) SendCommand(_ context.Context, req *proto.SendCommandVmReq
 	return &proto.SendCommandVmResponse{}, nil
 }
 
-func (s *serviceImpl) SendClientCommand(_ context.Context, req *proto.SendClientCommandVmRequest) (*proto.SendClientCommandVmResponse, error) {
+func (s *serviceImpl) SendClientCommand(req *proto.SendClientCommandVmRequest, stream grpc.ServerStreamingServer[proto.SendClientCommandVmResponse]) error {
 	if err := s.manager.SendClientCommand(req.Ip, req.Command); err != nil {
-		return nil, err
+		return err
 	}
 
-	return &proto.SendClientCommandVmResponse{}, nil
+	response := &proto.SendClientCommandVmResponse{Output: "Command finished executing"}
+	if err := stream.Send(response); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *serviceImpl) TrackSyscalls(_ context.Context, req *proto.TrackSyscallsVmRequest) (*proto.TrackSyscallsVmResponse, error) {
