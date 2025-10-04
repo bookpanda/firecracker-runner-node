@@ -13,6 +13,8 @@ import (
 type Manager struct {
 	config      *config.Config
 	vmCtx       context.Context
+	traceCtx    context.Context
+	cancelTrace context.CancelFunc
 	vms         map[string]*SimplifiedVM
 	wg          sync.WaitGroup
 	syscallsDir string
@@ -20,9 +22,12 @@ type Manager struct {
 }
 
 func NewManager(cfg *config.Config, vmCtx context.Context) *Manager {
+	traceCtx, cancelTrace := context.WithCancel(context.Background())
 	return &Manager{
 		config:      cfg,
 		vmCtx:       vmCtx,
+		traceCtx:    traceCtx,
+		cancelTrace: cancelTrace,
 		vms:         make(map[string]*SimplifiedVM),
 		syscallsDir: "./vm-syscalls",
 		testDir:     "./vm-test",
@@ -71,7 +76,7 @@ func (m *Manager) LogNetworkingInfo() {
 	}
 }
 
-func (m *Manager) SendCommand(ip, command string) error {
+func (m *Manager) SendCommand(ip, command string, wait bool) error {
 	vm, ok := m.vms[ip]
 	if !ok {
 		log.Printf("vm %s not found", ip)
@@ -83,6 +88,24 @@ func (m *Manager) SendCommand(ip, command string) error {
 		log.Printf("failed to send command to vm %s: %v", vm.IP, err)
 		return fmt.Errorf("failed to send command to vm %s: %v", vm.IP, err)
 	}
+
+	return nil
+}
+
+func (m *Manager) SendClientCommand(ip, command string) error {
+	vm, ok := m.vms[ip]
+	if !ok {
+		log.Printf("vm %s not found", ip)
+		return fmt.Errorf("vm %s not found", ip)
+	}
+	logPath := filepath.Join(m.testDir, fmt.Sprintf("vm-%s.log", vm.IP))
+
+	if err := m.captureCommandOutputVsock(vm.VsockPath, 1234, command, logPath, true); err != nil {
+		log.Printf("failed to send command to vm %s: %v", vm.IP, err)
+		return fmt.Errorf("failed to send command to vm %s: %v", vm.IP, err)
+	}
+
+	m.wg.Wait()
 
 	return nil
 }

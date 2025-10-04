@@ -34,11 +34,19 @@ func (s *serviceImpl) Create(_ context.Context, req *proto.CreateVmRequest) (*pr
 }
 
 func (s *serviceImpl) SendCommand(_ context.Context, req *proto.SendCommandVmRequest) (*proto.SendCommandVmResponse, error) {
-	if err := s.manager.SendCommand(req.Ip, req.Command); err != nil {
+	if err := s.manager.SendCommand(req.Ip, req.Command, req.Wait); err != nil {
 		return nil, err
 	}
 
 	return &proto.SendCommandVmResponse{}, nil
+}
+
+func (s *serviceImpl) SendClientCommand(_ context.Context, req *proto.SendClientCommandVmRequest) (*proto.SendClientCommandVmResponse, error) {
+	if err := s.manager.SendClientCommand(req.Ip, req.Command); err != nil {
+		return nil, err
+	}
+
+	return &proto.SendClientCommandVmResponse{}, nil
 }
 
 func (s *serviceImpl) TrackSyscalls(_ context.Context, req *proto.TrackSyscallsVmRequest) (*proto.TrackSyscallsVmResponse, error) {
@@ -47,6 +55,14 @@ func (s *serviceImpl) TrackSyscalls(_ context.Context, req *proto.TrackSyscallsV
 	}
 
 	return &proto.TrackSyscallsVmResponse{}, nil
+}
+
+func (s *serviceImpl) StopSyscalls(_ context.Context, req *proto.StopSyscallsVmRequest) (*proto.StopSyscallsVmResponse, error) {
+	if err := s.manager.StopSyscalls(); err != nil {
+		return nil, err
+	}
+
+	return &proto.StopSyscallsVmResponse{}, nil
 }
 
 func (s *serviceImpl) Cleanup(_ context.Context, req *proto.CleanupVmRequest) (*proto.CleanupVmResponse, error) {

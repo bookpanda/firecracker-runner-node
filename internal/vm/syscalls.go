@@ -26,10 +26,15 @@ func (m *Manager) TrackSyscalls() error {
 
 		command := fmt.Sprintf("sudo %s %d", tracePath, pid)
 		logPath := filepath.Join(m.syscallsDir, fmt.Sprintf("vm-%s.log", vm.IP))
-		if err := captureCommandOutput(m.vmCtx, vm.IP, command, logPath); err != nil {
+		if err := captureCommandOutput(m.traceCtx, vm.IP, command, logPath); err != nil {
 			return fmt.Errorf("failed to track syscalls of vm %s: %v", vm.IP, err)
 		}
 	}
+	return nil
+}
+
+func (m *Manager) StopSyscalls() error {
+	m.cancelTrace()
 	return nil
 }
 
@@ -89,7 +94,7 @@ func captureCommandOutput(ctx context.Context, vmIP, command, logPath string) er
 			}
 		}()
 
-		// for servers: stop when context is canceled
+		// for trace: stop when traceCtx is canceled
 		<-ctx.Done()
 		cmd.Process.Kill() // kill ONLY server process
 		cmd.Wait()         // wait for stdout/stderr to be closed

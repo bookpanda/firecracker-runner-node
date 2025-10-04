@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	VmService_Create_FullMethodName        = "/proto.vm.v1.VmService/Create"
-	VmService_SendCommand_FullMethodName   = "/proto.vm.v1.VmService/SendCommand"
-	VmService_TrackSyscalls_FullMethodName = "/proto.vm.v1.VmService/TrackSyscalls"
-	VmService_Cleanup_FullMethodName       = "/proto.vm.v1.VmService/Cleanup"
+	VmService_Create_FullMethodName            = "/proto.vm.v1.VmService/Create"
+	VmService_SendCommand_FullMethodName       = "/proto.vm.v1.VmService/SendCommand"
+	VmService_SendClientCommand_FullMethodName = "/proto.vm.v1.VmService/SendClientCommand"
+	VmService_TrackSyscalls_FullMethodName     = "/proto.vm.v1.VmService/TrackSyscalls"
+	VmService_StopSyscalls_FullMethodName      = "/proto.vm.v1.VmService/StopSyscalls"
+	VmService_Cleanup_FullMethodName           = "/proto.vm.v1.VmService/Cleanup"
 )
 
 // VmServiceClient is the client API for VmService service.
@@ -31,7 +33,9 @@ const (
 type VmServiceClient interface {
 	Create(ctx context.Context, in *CreateVmRequest, opts ...grpc.CallOption) (*CreateVmResponse, error)
 	SendCommand(ctx context.Context, in *SendCommandVmRequest, opts ...grpc.CallOption) (*SendCommandVmResponse, error)
+	SendClientCommand(ctx context.Context, in *SendClientCommandVmRequest, opts ...grpc.CallOption) (*SendClientCommandVmResponse, error)
 	TrackSyscalls(ctx context.Context, in *TrackSyscallsVmRequest, opts ...grpc.CallOption) (*TrackSyscallsVmResponse, error)
+	StopSyscalls(ctx context.Context, in *StopSyscallsVmRequest, opts ...grpc.CallOption) (*StopSyscallsVmResponse, error)
 	Cleanup(ctx context.Context, in *CleanupVmRequest, opts ...grpc.CallOption) (*CleanupVmResponse, error)
 }
 
@@ -63,10 +67,30 @@ func (c *vmServiceClient) SendCommand(ctx context.Context, in *SendCommandVmRequ
 	return out, nil
 }
 
+func (c *vmServiceClient) SendClientCommand(ctx context.Context, in *SendClientCommandVmRequest, opts ...grpc.CallOption) (*SendClientCommandVmResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SendClientCommandVmResponse)
+	err := c.cc.Invoke(ctx, VmService_SendClientCommand_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *vmServiceClient) TrackSyscalls(ctx context.Context, in *TrackSyscallsVmRequest, opts ...grpc.CallOption) (*TrackSyscallsVmResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(TrackSyscallsVmResponse)
 	err := c.cc.Invoke(ctx, VmService_TrackSyscalls_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vmServiceClient) StopSyscalls(ctx context.Context, in *StopSyscallsVmRequest, opts ...grpc.CallOption) (*StopSyscallsVmResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StopSyscallsVmResponse)
+	err := c.cc.Invoke(ctx, VmService_StopSyscalls_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +113,9 @@ func (c *vmServiceClient) Cleanup(ctx context.Context, in *CleanupVmRequest, opt
 type VmServiceServer interface {
 	Create(context.Context, *CreateVmRequest) (*CreateVmResponse, error)
 	SendCommand(context.Context, *SendCommandVmRequest) (*SendCommandVmResponse, error)
+	SendClientCommand(context.Context, *SendClientCommandVmRequest) (*SendClientCommandVmResponse, error)
 	TrackSyscalls(context.Context, *TrackSyscallsVmRequest) (*TrackSyscallsVmResponse, error)
+	StopSyscalls(context.Context, *StopSyscallsVmRequest) (*StopSyscallsVmResponse, error)
 	Cleanup(context.Context, *CleanupVmRequest) (*CleanupVmResponse, error)
 	mustEmbedUnimplementedVmServiceServer()
 }
@@ -107,8 +133,14 @@ func (UnimplementedVmServiceServer) Create(context.Context, *CreateVmRequest) (*
 func (UnimplementedVmServiceServer) SendCommand(context.Context, *SendCommandVmRequest) (*SendCommandVmResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendCommand not implemented")
 }
+func (UnimplementedVmServiceServer) SendClientCommand(context.Context, *SendClientCommandVmRequest) (*SendClientCommandVmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendClientCommand not implemented")
+}
 func (UnimplementedVmServiceServer) TrackSyscalls(context.Context, *TrackSyscallsVmRequest) (*TrackSyscallsVmResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TrackSyscalls not implemented")
+}
+func (UnimplementedVmServiceServer) StopSyscalls(context.Context, *StopSyscallsVmRequest) (*StopSyscallsVmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StopSyscalls not implemented")
 }
 func (UnimplementedVmServiceServer) Cleanup(context.Context, *CleanupVmRequest) (*CleanupVmResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Cleanup not implemented")
@@ -170,6 +202,24 @@ func _VmService_SendCommand_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VmService_SendClientCommand_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendClientCommandVmRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VmServiceServer).SendClientCommand(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VmService_SendClientCommand_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VmServiceServer).SendClientCommand(ctx, req.(*SendClientCommandVmRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _VmService_TrackSyscalls_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TrackSyscallsVmRequest)
 	if err := dec(in); err != nil {
@@ -184,6 +234,24 @@ func _VmService_TrackSyscalls_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VmServiceServer).TrackSyscalls(ctx, req.(*TrackSyscallsVmRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VmService_StopSyscalls_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StopSyscallsVmRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VmServiceServer).StopSyscalls(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VmService_StopSyscalls_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VmServiceServer).StopSyscalls(ctx, req.(*StopSyscallsVmRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -222,8 +290,16 @@ var VmService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VmService_SendCommand_Handler,
 		},
 		{
+			MethodName: "SendClientCommand",
+			Handler:    _VmService_SendClientCommand_Handler,
+		},
+		{
 			MethodName: "TrackSyscalls",
 			Handler:    _VmService_TrackSyscalls_Handler,
+		},
+		{
+			MethodName: "StopSyscalls",
+			Handler:    _VmService_StopSyscalls_Handler,
 		},
 		{
 			MethodName: "Cleanup",
