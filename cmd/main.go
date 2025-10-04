@@ -57,6 +57,10 @@ func main() {
 	}()
 
 	wait := gracefulShutdown(context.Background(), 2*time.Second, logger, map[string]operation{
+		"vm-manager": func(ctx context.Context) error {
+			cancel() // cancel vmCtx to stop syscall tracking and other VM operations
+			return vmManager.StopAllVMs()
+		},
 		"server": func(ctx context.Context) error {
 			grpcServer.GracefulStop()
 			return nil
