@@ -120,7 +120,7 @@ func (v *SimplifiedVM) killFirecrackerProcess() error {
 	return nil
 }
 
-func CreateVM(ctx context.Context, ip, kernelPath, rootfsPath string, vmIndex int) (*SimplifiedVM, error) {
+func CreateVM(ctx context.Context, ip, kernelPath, rootfsPath, gatewayIP string, vmIndex int) (*SimplifiedVM, error) {
 	socketPath := filepath.Join(os.TempDir(), fmt.Sprintf("vm-%s.sock", ip))
 	vsockPath := filepath.Join(os.TempDir(), fmt.Sprintf("vsock-%s.sock", ip))
 	cid := uint32(vmIndex + 3)
@@ -162,7 +162,7 @@ func CreateVM(ctx context.Context, ip, kernelPath, rootfsPath string, vmIndex in
 							IP:   net.ParseIP(ip),
 							Mask: net.CIDRMask(24, 32),
 						},
-						Gateway:     net.ParseIP("192.168.100.254"),
+						Gateway:     net.ParseIP(gatewayIP),
 						Nameservers: []string{"8.8.8.8", "8.8.4.4"},
 					},
 				},

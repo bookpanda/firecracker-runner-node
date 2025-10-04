@@ -27,7 +27,7 @@ func NewService(manager *Manager, log *zap.Logger) Service {
 }
 
 func (s *serviceImpl) Create(_ context.Context, req *proto.CreateVmRequest) (*proto.CreateVmResponse, error) {
-	vm, err := s.manager.CreateVM(req.Ip, req.KernelPath, req.RootfsPath)
+	vm, err := s.manager.CreateVM(req.Ip, req.KernelPath, req.RootfsPath, req.GatewayIP)
 	if err != nil {
 		return nil, err
 	}

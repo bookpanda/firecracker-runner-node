@@ -34,8 +34,8 @@ func NewManager(cfg *config.Config, vmCtx context.Context) *Manager {
 	}
 }
 
-func (m *Manager) CreateVM(ip, kernelPath, rootfsPath string) (*SimplifiedVM, error) {
-	vm, err := CreateVM(m.vmCtx, ip, kernelPath, rootfsPath, len(m.vms))
+func (m *Manager) CreateVM(ip, kernelPath, rootfsPath, gatewayIP string) (*SimplifiedVM, error) {
+	vm, err := CreateVM(m.vmCtx, ip, kernelPath, rootfsPath, gatewayIP, len(m.vms))
 	if err != nil {
 		return nil, err
 	}

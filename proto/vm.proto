@@ -23,6 +23,7 @@ message CreateVmRequest{
   string ip = 1;
   string kernelPath = 2;
   string rootfsPath = 3;
+  string gatewayIP = 4;
 }
 
 message CreateVmResponse{

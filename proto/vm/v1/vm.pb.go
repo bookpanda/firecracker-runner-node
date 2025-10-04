@@ -86,6 +86,7 @@ type CreateVmRequest struct {
 	Ip            string                 `protobuf:"bytes,1,opt,name=ip,proto3" json:"ip,omitempty"`
 	KernelPath    string                 `protobuf:"bytes,2,opt,name=kernelPath,proto3" json:"kernelPath,omitempty"`
 	RootfsPath    string                 `protobuf:"bytes,3,opt,name=rootfsPath,proto3" json:"rootfsPath,omitempty"`
+	GatewayIP     string                 `protobuf:"bytes,4,opt,name=gatewayIP,proto3" json:"gatewayIP,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,6 +138,13 @@ func (x *CreateVmRequest) GetKernelPath() string {
 func (x *CreateVmRequest) GetRootfsPath() string {
 	if x != nil {
 		return x.RootfsPath
+	}
+	return ""
+}
+
+func (x *CreateVmRequest) GetGatewayIP() string {
+	if x != nil {
+		return x.GatewayIP
 	}
 	return ""
 }
@@ -613,7 +621,7 @@ const file_proto_vm_proto_rawDesc = "" +
 	"kernelPath\x12\x1e\n" +
 	"\n" +
 	"rootfsPath\x18\x04 \x01(\tR\n" +
-	"rootfsPath\"a\n" +
+	"rootfsPath\"\x7f\n" +
 	"\x0fCreateVmRequest\x12\x0e\n" +
 	"\x02ip\x18\x01 \x01(\tR\x02ip\x12\x1e\n" +
 	"\n" +
@@ -621,7 +629,8 @@ const file_proto_vm_proto_rawDesc = "" +
 	"kernelPath\x12\x1e\n" +
 	"\n" +
 	"rootfsPath\x18\x03 \x01(\tR\n" +
-	"rootfsPath\"3\n" +
+	"rootfsPath\x12\x1c\n" +
+	"\tgatewayIP\x18\x04 \x01(\tR\tgatewayIP\"3\n" +
 	"\x10CreateVmResponse\x12\x1f\n" +
 	"\x02vm\x18\x01 \x01(\v2\x0f.proto.vm.v1.VmR\x02vm\"Z\n" +
 	"\x1aSendServerCommandVmRequest\x12\x0e\n" +
