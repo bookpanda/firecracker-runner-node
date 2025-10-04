@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"strings"
 )
 
 func Setup(numVMs int, bridgeIP string) (*Bridge, error) {
@@ -21,14 +22,16 @@ func Setup(numVMs int, bridgeIP string) (*Bridge, error) {
 		}
 	}
 
-	// configure bridge IP (only if not already configured)
-	cmd := exec.Command("sh", "-c", fmt.Sprintf("ip addr show %s | grep -q inet", bridge.Name))
+	// configure bridge IP with subnet mask
+	// Always ensure the bridge IP has /24 suffix
+	bridgeIPWithMask := bridge.IP
+	if !strings.Contains(bridgeIPWithMask, "/") {
+		bridgeIPWithMask = bridgeIPWithMask + "/24"
+	}
+
+	cmd := exec.Command("sudo", "ip", "addr", "add", bridgeIPWithMask, "dev", bridge.Name)
 	if err := cmd.Run(); err != nil {
-		// bridge doesn't have IP, add one
-		cmd = exec.Command("sudo", "ip", "addr", "add", bridge.IP, "dev", bridge.Name)
-		if err := cmd.Run(); err != nil {
-			log.Printf("Failed to add IP to bridge (might already exist): %v", err)
-		}
+		log.Printf("Failed to add IP to bridge (might already exist): %v", err)
 	}
 
 	// set up iptables rules for forwarding
