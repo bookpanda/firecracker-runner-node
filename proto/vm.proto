@@ -6,7 +6,7 @@ option go_package = "proto/vm/v1";
 
 service VmService {
   rpc Create(CreateVmRequest) returns (CreateVmResponse){}
-  rpc SendCommand(SendCommandVmRequest) returns (SendCommandVmResponse){}
+  rpc SendServerCommand(SendServerCommandVmRequest) returns (SendServerCommandVmResponse){}
   rpc SendClientCommand(SendClientCommandVmRequest) returns (stream SendClientCommandVmResponse){}
   rpc TrackSyscalls(TrackSyscallsVmRequest) returns (TrackSyscallsVmResponse){}
   rpc StopSyscalls(StopSyscallsVmRequest) returns (StopSyscallsVmResponse){}
@@ -29,13 +29,13 @@ message CreateVmResponse{
   Vm vm = 1;
 }
 
-message SendCommandVmRequest{
+message SendServerCommandVmRequest{
   string ip = 1;
   string command = 2;
   bool wait = 3;
 }
 
-message SendCommandVmResponse{
+message SendServerCommandVmResponse{
   string output = 1;
 }
 

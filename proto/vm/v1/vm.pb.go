@@ -185,7 +185,7 @@ func (x *CreateVmResponse) GetVm() *Vm {
 	return nil
 }
 
-type SendCommandVmRequest struct {
+type SendServerCommandVmRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Ip            string                 `protobuf:"bytes,1,opt,name=ip,proto3" json:"ip,omitempty"`
 	Command       string                 `protobuf:"bytes,2,opt,name=command,proto3" json:"command,omitempty"`
@@ -194,20 +194,20 @@ type SendCommandVmRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *SendCommandVmRequest) Reset() {
-	*x = SendCommandVmRequest{}
+func (x *SendServerCommandVmRequest) Reset() {
+	*x = SendServerCommandVmRequest{}
 	mi := &file_proto_vm_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *SendCommandVmRequest) String() string {
+func (x *SendServerCommandVmRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SendCommandVmRequest) ProtoMessage() {}
+func (*SendServerCommandVmRequest) ProtoMessage() {}
 
-func (x *SendCommandVmRequest) ProtoReflect() protoreflect.Message {
+func (x *SendServerCommandVmRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_vm_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -219,53 +219,53 @@ func (x *SendCommandVmRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SendCommandVmRequest.ProtoReflect.Descriptor instead.
-func (*SendCommandVmRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use SendServerCommandVmRequest.ProtoReflect.Descriptor instead.
+func (*SendServerCommandVmRequest) Descriptor() ([]byte, []int) {
 	return file_proto_vm_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *SendCommandVmRequest) GetIp() string {
+func (x *SendServerCommandVmRequest) GetIp() string {
 	if x != nil {
 		return x.Ip
 	}
 	return ""
 }
 
-func (x *SendCommandVmRequest) GetCommand() string {
+func (x *SendServerCommandVmRequest) GetCommand() string {
 	if x != nil {
 		return x.Command
 	}
 	return ""
 }
 
-func (x *SendCommandVmRequest) GetWait() bool {
+func (x *SendServerCommandVmRequest) GetWait() bool {
 	if x != nil {
 		return x.Wait
 	}
 	return false
 }
 
-type SendCommandVmResponse struct {
+type SendServerCommandVmResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Output        string                 `protobuf:"bytes,1,opt,name=output,proto3" json:"output,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *SendCommandVmResponse) Reset() {
-	*x = SendCommandVmResponse{}
+func (x *SendServerCommandVmResponse) Reset() {
+	*x = SendServerCommandVmResponse{}
 	mi := &file_proto_vm_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *SendCommandVmResponse) String() string {
+func (x *SendServerCommandVmResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SendCommandVmResponse) ProtoMessage() {}
+func (*SendServerCommandVmResponse) ProtoMessage() {}
 
-func (x *SendCommandVmResponse) ProtoReflect() protoreflect.Message {
+func (x *SendServerCommandVmResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_vm_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -277,12 +277,12 @@ func (x *SendCommandVmResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SendCommandVmResponse.ProtoReflect.Descriptor instead.
-func (*SendCommandVmResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use SendServerCommandVmResponse.ProtoReflect.Descriptor instead.
+func (*SendServerCommandVmResponse) Descriptor() ([]byte, []int) {
 	return file_proto_vm_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *SendCommandVmResponse) GetOutput() string {
+func (x *SendServerCommandVmResponse) GetOutput() string {
 	if x != nil {
 		return x.Output
 	}
@@ -623,12 +623,12 @@ const file_proto_vm_proto_rawDesc = "" +
 	"rootfsPath\x18\x03 \x01(\tR\n" +
 	"rootfsPath\"3\n" +
 	"\x10CreateVmResponse\x12\x1f\n" +
-	"\x02vm\x18\x01 \x01(\v2\x0f.proto.vm.v1.VmR\x02vm\"T\n" +
-	"\x14SendCommandVmRequest\x12\x0e\n" +
+	"\x02vm\x18\x01 \x01(\v2\x0f.proto.vm.v1.VmR\x02vm\"Z\n" +
+	"\x1aSendServerCommandVmRequest\x12\x0e\n" +
 	"\x02ip\x18\x01 \x01(\tR\x02ip\x12\x18\n" +
 	"\acommand\x18\x02 \x01(\tR\acommand\x12\x12\n" +
-	"\x04wait\x18\x03 \x01(\bR\x04wait\"/\n" +
-	"\x15SendCommandVmResponse\x12\x16\n" +
+	"\x04wait\x18\x03 \x01(\bR\x04wait\"5\n" +
+	"\x1bSendServerCommandVmResponse\x12\x16\n" +
 	"\x06output\x18\x01 \x01(\tR\x06output\"F\n" +
 	"\x1aSendClientCommandVmRequest\x12\x0e\n" +
 	"\x02ip\x18\x01 \x01(\tR\x02ip\x12\x18\n" +
@@ -640,10 +640,10 @@ const file_proto_vm_proto_rawDesc = "" +
 	"\x15StopSyscallsVmRequest\"\x18\n" +
 	"\x16StopSyscallsVmResponse\"\x12\n" +
 	"\x10CleanupVmRequest\"\x13\n" +
-	"\x11CleanupVmResponse2\x9d\x04\n" +
+	"\x11CleanupVmResponse2\xaf\x04\n" +
 	"\tVmService\x12G\n" +
-	"\x06Create\x12\x1c.proto.vm.v1.CreateVmRequest\x1a\x1d.proto.vm.v1.CreateVmResponse\"\x00\x12V\n" +
-	"\vSendCommand\x12!.proto.vm.v1.SendCommandVmRequest\x1a\".proto.vm.v1.SendCommandVmResponse\"\x00\x12j\n" +
+	"\x06Create\x12\x1c.proto.vm.v1.CreateVmRequest\x1a\x1d.proto.vm.v1.CreateVmResponse\"\x00\x12h\n" +
+	"\x11SendServerCommand\x12'.proto.vm.v1.SendServerCommandVmRequest\x1a(.proto.vm.v1.SendServerCommandVmResponse\"\x00\x12j\n" +
 	"\x11SendClientCommand\x12'.proto.vm.v1.SendClientCommandVmRequest\x1a(.proto.vm.v1.SendClientCommandVmResponse\"\x000\x01\x12\\\n" +
 	"\rTrackSyscalls\x12#.proto.vm.v1.TrackSyscallsVmRequest\x1a$.proto.vm.v1.TrackSyscallsVmResponse\"\x00\x12Y\n" +
 	"\fStopSyscalls\x12\".proto.vm.v1.StopSyscallsVmRequest\x1a#.proto.vm.v1.StopSyscallsVmResponse\"\x00\x12J\n" +
@@ -666,8 +666,8 @@ var file_proto_vm_proto_goTypes = []any{
 	(*Vm)(nil),                          // 0: proto.vm.v1.Vm
 	(*CreateVmRequest)(nil),             // 1: proto.vm.v1.CreateVmRequest
 	(*CreateVmResponse)(nil),            // 2: proto.vm.v1.CreateVmResponse
-	(*SendCommandVmRequest)(nil),        // 3: proto.vm.v1.SendCommandVmRequest
-	(*SendCommandVmResponse)(nil),       // 4: proto.vm.v1.SendCommandVmResponse
+	(*SendServerCommandVmRequest)(nil),  // 3: proto.vm.v1.SendServerCommandVmRequest
+	(*SendServerCommandVmResponse)(nil), // 4: proto.vm.v1.SendServerCommandVmResponse
 	(*SendClientCommandVmRequest)(nil),  // 5: proto.vm.v1.SendClientCommandVmRequest
 	(*SendClientCommandVmResponse)(nil), // 6: proto.vm.v1.SendClientCommandVmResponse
 	(*TrackSyscallsVmRequest)(nil),      // 7: proto.vm.v1.TrackSyscallsVmRequest
@@ -680,13 +680,13 @@ var file_proto_vm_proto_goTypes = []any{
 var file_proto_vm_proto_depIdxs = []int32{
 	0,  // 0: proto.vm.v1.CreateVmResponse.vm:type_name -> proto.vm.v1.Vm
 	1,  // 1: proto.vm.v1.VmService.Create:input_type -> proto.vm.v1.CreateVmRequest
-	3,  // 2: proto.vm.v1.VmService.SendCommand:input_type -> proto.vm.v1.SendCommandVmRequest
+	3,  // 2: proto.vm.v1.VmService.SendServerCommand:input_type -> proto.vm.v1.SendServerCommandVmRequest
 	5,  // 3: proto.vm.v1.VmService.SendClientCommand:input_type -> proto.vm.v1.SendClientCommandVmRequest
 	7,  // 4: proto.vm.v1.VmService.TrackSyscalls:input_type -> proto.vm.v1.TrackSyscallsVmRequest
 	9,  // 5: proto.vm.v1.VmService.StopSyscalls:input_type -> proto.vm.v1.StopSyscallsVmRequest
 	11, // 6: proto.vm.v1.VmService.Cleanup:input_type -> proto.vm.v1.CleanupVmRequest
 	2,  // 7: proto.vm.v1.VmService.Create:output_type -> proto.vm.v1.CreateVmResponse
-	4,  // 8: proto.vm.v1.VmService.SendCommand:output_type -> proto.vm.v1.SendCommandVmResponse
+	4,  // 8: proto.vm.v1.VmService.SendServerCommand:output_type -> proto.vm.v1.SendServerCommandVmResponse
 	6,  // 9: proto.vm.v1.VmService.SendClientCommand:output_type -> proto.vm.v1.SendClientCommandVmResponse
 	8,  // 10: proto.vm.v1.VmService.TrackSyscalls:output_type -> proto.vm.v1.TrackSyscallsVmResponse
 	10, // 11: proto.vm.v1.VmService.StopSyscalls:output_type -> proto.vm.v1.StopSyscallsVmResponse

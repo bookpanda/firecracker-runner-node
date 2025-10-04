@@ -34,12 +34,12 @@ func (s *serviceImpl) Create(_ context.Context, req *proto.CreateVmRequest) (*pr
 	return &proto.CreateVmResponse{Vm: &proto.Vm{Ip: vm.IP, KernelPath: vm.KernelPath, RootfsPath: vm.RootfsPath}}, nil
 }
 
-func (s *serviceImpl) SendCommand(_ context.Context, req *proto.SendCommandVmRequest) (*proto.SendCommandVmResponse, error) {
+func (s *serviceImpl) SendServerCommand(_ context.Context, req *proto.SendServerCommandVmRequest) (*proto.SendServerCommandVmResponse, error) {
 	if err := s.manager.SendCommand(req.Ip, req.Command, req.Wait); err != nil {
 		return nil, err
 	}
 
-	return &proto.SendCommandVmResponse{}, nil
+	return &proto.SendServerCommandVmResponse{}, nil
 }
 
 func (s *serviceImpl) SendClientCommand(req *proto.SendClientCommandVmRequest, stream grpc.ServerStreamingServer[proto.SendClientCommandVmResponse]) error {
