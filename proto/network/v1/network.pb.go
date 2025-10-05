@@ -189,6 +189,102 @@ func (*CleanupNetworkResponse) Descriptor() ([]byte, []int) {
 	return file_proto_network_proto_rawDescGZIP(), []int{3}
 }
 
+type SetupCrossNodeRouteRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RemoteSubnet  string                 `protobuf:"bytes,1,opt,name=remoteSubnet,proto3" json:"remoteSubnet,omitempty"`
+	RemoteNodeIP  string                 `protobuf:"bytes,2,opt,name=remoteNodeIP,proto3" json:"remoteNodeIP,omitempty"`
+	LocalBridgeIP string                 `protobuf:"bytes,3,opt,name=localBridgeIP,proto3" json:"localBridgeIP,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SetupCrossNodeRouteRequest) Reset() {
+	*x = SetupCrossNodeRouteRequest{}
+	mi := &file_proto_network_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SetupCrossNodeRouteRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetupCrossNodeRouteRequest) ProtoMessage() {}
+
+func (x *SetupCrossNodeRouteRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_network_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetupCrossNodeRouteRequest.ProtoReflect.Descriptor instead.
+func (*SetupCrossNodeRouteRequest) Descriptor() ([]byte, []int) {
+	return file_proto_network_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *SetupCrossNodeRouteRequest) GetRemoteSubnet() string {
+	if x != nil {
+		return x.RemoteSubnet
+	}
+	return ""
+}
+
+func (x *SetupCrossNodeRouteRequest) GetRemoteNodeIP() string {
+	if x != nil {
+		return x.RemoteNodeIP
+	}
+	return ""
+}
+
+func (x *SetupCrossNodeRouteRequest) GetLocalBridgeIP() string {
+	if x != nil {
+		return x.LocalBridgeIP
+	}
+	return ""
+}
+
+type SetupCrossNodeRouteResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SetupCrossNodeRouteResponse) Reset() {
+	*x = SetupCrossNodeRouteResponse{}
+	mi := &file_proto_network_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SetupCrossNodeRouteResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetupCrossNodeRouteResponse) ProtoMessage() {}
+
+func (x *SetupCrossNodeRouteResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_network_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetupCrossNodeRouteResponse.ProtoReflect.Descriptor instead.
+func (*SetupCrossNodeRouteResponse) Descriptor() ([]byte, []int) {
+	return file_proto_network_proto_rawDescGZIP(), []int{5}
+}
+
 var File_proto_network_proto protoreflect.FileDescriptor
 
 const file_proto_network_proto_rawDesc = "" +
@@ -200,10 +296,16 @@ const file_proto_network_proto_rawDesc = "" +
 	"\x14SetupNetworkResponse\"/\n" +
 	"\x15CleanupNetworkRequest\x12\x16\n" +
 	"\x06numVMs\x18\x01 \x01(\x05R\x06numVMs\"\x18\n" +
-	"\x16CleanupNetworkResponse2\xca\x01\n" +
+	"\x16CleanupNetworkResponse\"\x8a\x01\n" +
+	"\x1aSetupCrossNodeRouteRequest\x12\"\n" +
+	"\fremoteSubnet\x18\x01 \x01(\tR\fremoteSubnet\x12\"\n" +
+	"\fremoteNodeIP\x18\x02 \x01(\tR\fremoteNodeIP\x12$\n" +
+	"\rlocalBridgeIP\x18\x03 \x01(\tR\rlocalBridgeIP\"\x1d\n" +
+	"\x1bSetupCrossNodeRouteResponse2\xc0\x02\n" +
 	"\x0eNetworkService\x12X\n" +
 	"\x05Setup\x12%.proto.network.v1.SetupNetworkRequest\x1a&.proto.network.v1.SetupNetworkResponse\"\x00\x12^\n" +
-	"\aCleanup\x12'.proto.network.v1.CleanupNetworkRequest\x1a(.proto.network.v1.CleanupNetworkResponse\"\x00B\x12Z\x10proto/network/v1b\x06proto3"
+	"\aCleanup\x12'.proto.network.v1.CleanupNetworkRequest\x1a(.proto.network.v1.CleanupNetworkResponse\"\x00\x12t\n" +
+	"\x13SetupCrossNodeRoute\x12,.proto.network.v1.SetupCrossNodeRouteRequest\x1a-.proto.network.v1.SetupCrossNodeRouteResponse\"\x00B\x12Z\x10proto/network/v1b\x06proto3"
 
 var (
 	file_proto_network_proto_rawDescOnce sync.Once
@@ -217,20 +319,24 @@ func file_proto_network_proto_rawDescGZIP() []byte {
 	return file_proto_network_proto_rawDescData
 }
 
-var file_proto_network_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_network_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_proto_network_proto_goTypes = []any{
-	(*SetupNetworkRequest)(nil),    // 0: proto.network.v1.SetupNetworkRequest
-	(*SetupNetworkResponse)(nil),   // 1: proto.network.v1.SetupNetworkResponse
-	(*CleanupNetworkRequest)(nil),  // 2: proto.network.v1.CleanupNetworkRequest
-	(*CleanupNetworkResponse)(nil), // 3: proto.network.v1.CleanupNetworkResponse
+	(*SetupNetworkRequest)(nil),         // 0: proto.network.v1.SetupNetworkRequest
+	(*SetupNetworkResponse)(nil),        // 1: proto.network.v1.SetupNetworkResponse
+	(*CleanupNetworkRequest)(nil),       // 2: proto.network.v1.CleanupNetworkRequest
+	(*CleanupNetworkResponse)(nil),      // 3: proto.network.v1.CleanupNetworkResponse
+	(*SetupCrossNodeRouteRequest)(nil),  // 4: proto.network.v1.SetupCrossNodeRouteRequest
+	(*SetupCrossNodeRouteResponse)(nil), // 5: proto.network.v1.SetupCrossNodeRouteResponse
 }
 var file_proto_network_proto_depIdxs = []int32{
 	0, // 0: proto.network.v1.NetworkService.Setup:input_type -> proto.network.v1.SetupNetworkRequest
 	2, // 1: proto.network.v1.NetworkService.Cleanup:input_type -> proto.network.v1.CleanupNetworkRequest
-	1, // 2: proto.network.v1.NetworkService.Setup:output_type -> proto.network.v1.SetupNetworkResponse
-	3, // 3: proto.network.v1.NetworkService.Cleanup:output_type -> proto.network.v1.CleanupNetworkResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	4, // 2: proto.network.v1.NetworkService.SetupCrossNodeRoute:input_type -> proto.network.v1.SetupCrossNodeRouteRequest
+	1, // 3: proto.network.v1.NetworkService.Setup:output_type -> proto.network.v1.SetupNetworkResponse
+	3, // 4: proto.network.v1.NetworkService.Cleanup:output_type -> proto.network.v1.CleanupNetworkResponse
+	5, // 5: proto.network.v1.NetworkService.SetupCrossNodeRoute:output_type -> proto.network.v1.SetupCrossNodeRouteResponse
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -247,7 +353,7 @@ func file_proto_network_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_network_proto_rawDesc), len(file_proto_network_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	NetworkService_Setup_FullMethodName   = "/proto.network.v1.NetworkService/Setup"
-	NetworkService_Cleanup_FullMethodName = "/proto.network.v1.NetworkService/Cleanup"
+	NetworkService_Setup_FullMethodName               = "/proto.network.v1.NetworkService/Setup"
+	NetworkService_Cleanup_FullMethodName             = "/proto.network.v1.NetworkService/Cleanup"
+	NetworkService_SetupCrossNodeRoute_FullMethodName = "/proto.network.v1.NetworkService/SetupCrossNodeRoute"
 )
 
 // NetworkServiceClient is the client API for NetworkService service.
@@ -29,6 +30,7 @@ const (
 type NetworkServiceClient interface {
 	Setup(ctx context.Context, in *SetupNetworkRequest, opts ...grpc.CallOption) (*SetupNetworkResponse, error)
 	Cleanup(ctx context.Context, in *CleanupNetworkRequest, opts ...grpc.CallOption) (*CleanupNetworkResponse, error)
+	SetupCrossNodeRoute(ctx context.Context, in *SetupCrossNodeRouteRequest, opts ...grpc.CallOption) (*SetupCrossNodeRouteResponse, error)
 }
 
 type networkServiceClient struct {
@@ -59,12 +61,23 @@ func (c *networkServiceClient) Cleanup(ctx context.Context, in *CleanupNetworkRe
 	return out, nil
 }
 
+func (c *networkServiceClient) SetupCrossNodeRoute(ctx context.Context, in *SetupCrossNodeRouteRequest, opts ...grpc.CallOption) (*SetupCrossNodeRouteResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetupCrossNodeRouteResponse)
+	err := c.cc.Invoke(ctx, NetworkService_SetupCrossNodeRoute_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NetworkServiceServer is the server API for NetworkService service.
 // All implementations must embed UnimplementedNetworkServiceServer
 // for forward compatibility.
 type NetworkServiceServer interface {
 	Setup(context.Context, *SetupNetworkRequest) (*SetupNetworkResponse, error)
 	Cleanup(context.Context, *CleanupNetworkRequest) (*CleanupNetworkResponse, error)
+	SetupCrossNodeRoute(context.Context, *SetupCrossNodeRouteRequest) (*SetupCrossNodeRouteResponse, error)
 	mustEmbedUnimplementedNetworkServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedNetworkServiceServer) Setup(context.Context, *SetupNetworkReq
 }
 func (UnimplementedNetworkServiceServer) Cleanup(context.Context, *CleanupNetworkRequest) (*CleanupNetworkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Cleanup not implemented")
+}
+func (UnimplementedNetworkServiceServer) SetupCrossNodeRoute(context.Context, *SetupCrossNodeRouteRequest) (*SetupCrossNodeRouteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetupCrossNodeRoute not implemented")
 }
 func (UnimplementedNetworkServiceServer) mustEmbedUnimplementedNetworkServiceServer() {}
 func (UnimplementedNetworkServiceServer) testEmbeddedByValue()                        {}
@@ -138,6 +154,24 @@ func _NetworkService_Cleanup_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NetworkService_SetupCrossNodeRoute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetupCrossNodeRouteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NetworkServiceServer).SetupCrossNodeRoute(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NetworkService_SetupCrossNodeRoute_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NetworkServiceServer).SetupCrossNodeRoute(ctx, req.(*SetupCrossNodeRouteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NetworkService_ServiceDesc is the grpc.ServiceDesc for NetworkService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var NetworkService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Cleanup",
 			Handler:    _NetworkService_Cleanup_Handler,
+		},
+		{
+			MethodName: "SetupCrossNodeRoute",
+			Handler:    _NetworkService_SetupCrossNodeRoute_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

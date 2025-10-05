@@ -7,6 +7,7 @@ option go_package = "proto/network/v1";
 service NetworkService {
   rpc Setup(SetupNetworkRequest) returns (SetupNetworkResponse){}
   rpc Cleanup(CleanupNetworkRequest) returns (CleanupNetworkResponse){}
+  rpc SetupCrossNodeRoute(SetupCrossNodeRouteRequest) returns (SetupCrossNodeRouteResponse){}
 }
 
 message SetupNetworkRequest{
@@ -22,4 +23,13 @@ message CleanupNetworkRequest{
 }
 
 message CleanupNetworkResponse{
+}
+
+message SetupCrossNodeRouteRequest{
+  string remoteSubnet = 1;
+  string remoteNodeIP = 2;
+  string localBridgeIP = 3;
+}
+
+message SetupCrossNodeRouteResponse{
 }

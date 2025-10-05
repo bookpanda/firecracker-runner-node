@@ -42,13 +42,21 @@ func Setup(numVMs int, bridgeIP string) (*Bridge, error) {
 }
 
 func setupIptables(bridge *Bridge) {
+	// Extract subnet from bridge IP (e.g., "192.168.100.1" -> "192.168.100.0/24")
+	bridgeSubnet := getBridgeSubnet(bridge.IP)
+
 	commands := [][]string{
 		{"sudo", "sh", "-c", "echo 1 > /proc/sys/net/ipv4/ip_forward"},
 		{"sudo", "iptables", "-I", "INPUT", "-i", bridge.Name, "-p", "udp", "-j", "ACCEPT"},
 		{"sudo", "iptables", "-I", "INPUT", "-i", bridge.Name, "-p", "tcp", "-j", "ACCEPT"},
+		{"sudo", "iptables", "-I", "INPUT", "-i", bridge.Name, "-p", "icmp", "-j", "ACCEPT"},
 		{"sudo", "iptables", "-I", "FORWARD", "-i", bridge.Name, "-p", "udp", "-j", "ACCEPT"},
 		{"sudo", "iptables", "-I", "FORWARD", "-i", bridge.Name, "-p", "tcp", "-j", "ACCEPT"},
+		{"sudo", "iptables", "-I", "FORWARD", "-i", bridge.Name, "-p", "icmp", "-j", "ACCEPT"},
+		{"sudo", "iptables", "-I", "FORWARD", "-o", bridge.Name, "-p", "icmp", "-j", "ACCEPT"},
 		{"sudo", "iptables", "-I", "FORWARD", "1", "-i", bridge.Name, "-o", bridge.Name, "-j", "ACCEPT"},
+		// Enable masquerading for outgoing traffic from the bridge subnet
+		{"sudo", "iptables", "-t", "nat", "-A", "POSTROUTING", "-s", bridgeSubnet, "!", "-d", bridgeSubnet, "-j", "MASQUERADE"},
 	}
 
 	for _, cmd := range commands {
@@ -56,6 +64,16 @@ func setupIptables(bridge *Bridge) {
 			log.Printf("iptables command failed (might already exist): %v", err)
 		}
 	}
+}
+
+func getBridgeSubnet(bridgeIP string) string {
+	// Extract first 3 octets and add .0/24
+	// e.g., "192.168.100.1" -> "192.168.100.0/24"
+	parts := strings.Split(bridgeIP, ".")
+	if len(parts) >= 3 {
+		return fmt.Sprintf("%s.%s.%s.0/24", parts[0], parts[1], parts[2])
+	}
+	return "192.168.0.0/24" // fallback
 }
 
 func Cleanup(numVMs int) error {
