@@ -76,7 +76,7 @@ func (m *Manager) LogNetworkingInfo() {
 	}
 }
 
-func (m *Manager) SendCommand(ip, command string, wait bool) error {
+func (m *Manager) SendServerCommand(ip, command string, wait bool) error {
 	vm, ok := m.vms[ip]
 	if !ok {
 		log.Printf("vm %s not found", ip)
