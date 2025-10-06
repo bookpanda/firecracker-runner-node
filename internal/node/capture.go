@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func (n *Node) TrackSyscalls(pid int) error {
+func (n *Node) trackSyscalls(pid int) error {
 	tracePath, err := os.Getwd()
 	if err != nil {
 		return fmt.Errorf("failed to get working directory: %v", err)
@@ -20,24 +20,26 @@ func (n *Node) TrackSyscalls(pid int) error {
 
 	command := fmt.Sprintf("sudo %s %d", tracePath, pid)
 	logPath := filepath.Join(n.logsDir, "node-syscalls.log")
-	if err := captureCommandOutput(n.traceCtx, command, logPath); err != nil {
+	if err := n.captureCommandOutput(n.traceCtx, command, logPath, false); err != nil {
 		return fmt.Errorf("failed to track syscalls of node: %v", err)
 	}
 	return nil
 }
 
-func (n *Node) StopSyscalls() error {
-	n.cancelTrace()
-	return nil
-}
-
-func captureCommandOutput(ctx context.Context, command, logPath string) error {
+func (n *Node) captureCommandOutput(ctx context.Context, command, logPath string, wait bool) error {
 	logFile, err := os.Create(logPath)
 	if err != nil {
 		return fmt.Errorf("failed to create log file %s: %v", logPath, err)
 	}
 
+	if wait {
+		n.wg.Add(1)
+	}
+
 	go func() {
+		if wait {
+			defer n.wg.Done()
+		}
 		defer logFile.Close()
 
 		var cmd *exec.Cmd
@@ -87,11 +89,16 @@ func captureCommandOutput(ctx context.Context, command, logPath string) error {
 			}
 		}()
 
-		// for trace: stop when traceCtx is canceled
-		<-ctx.Done()
-		cmd.Process.Kill() // kill ONLY server process
-		cmd.Wait()         // wait for stdout/stderr to be closed
-		log.Printf("Server on node stopped, logs saved to %s", logPath)
+		if wait {
+			cmd.Wait()
+			log.Printf("Command completed on node, output saved to %s", logPath)
+		} else {
+			// for trace/server: stop when ctx is canceled
+			<-ctx.Done()
+			cmd.Process.Kill() // kill ONLY server process
+			cmd.Wait()         // wait for stdout/stderr to be closed
+			log.Printf("Command on node stopped, logs saved to %s", logPath)
+		}
 	}()
 
 	return nil

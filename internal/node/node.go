@@ -32,7 +32,7 @@ func NewNode(cfg *config.Config) *Node {
 func (n *Node) SendServerCommand(command string) error {
 	testLogPath := filepath.Join(n.logsDir, "node-server.log")
 
-	if err := captureCommandOutput(n.traceCtx, command, testLogPath); err != nil {
+	if err := n.captureCommandOutput(n.traceCtx, command, testLogPath, false); err != nil {
 		log.Printf("failed to send command to node: %v", err)
 		return fmt.Errorf("failed to send command to node: %v", err)
 	}
@@ -43,12 +43,17 @@ func (n *Node) SendServerCommand(command string) error {
 func (n *Node) SendClientCommand(command string) error {
 	testLogPath := filepath.Join(n.logsDir, "node-client.log")
 
-	if err := captureCommandOutput(n.traceCtx, command, testLogPath); err != nil {
+	if err := n.captureCommandOutput(n.traceCtx, command, testLogPath, true); err != nil {
 		log.Printf("failed to send command to node: %v", err)
 		return fmt.Errorf("failed to send command to node: %v", err)
 	}
 
 	n.wg.Wait()
 
+	return nil
+}
+
+func (n *Node) stopSyscalls() error {
+	n.cancelTrace()
 	return nil
 }
