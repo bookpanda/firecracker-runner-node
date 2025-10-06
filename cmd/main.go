@@ -13,9 +13,11 @@ import (
 	"github.com/bookpanda/firecracker-runner-node/internal/config"
 	"github.com/bookpanda/firecracker-runner-node/internal/filesystem"
 	"github.com/bookpanda/firecracker-runner-node/internal/network"
+	"github.com/bookpanda/firecracker-runner-node/internal/node"
 	"github.com/bookpanda/firecracker-runner-node/internal/vm"
 	filesystemProto "github.com/bookpanda/firecracker-runner-node/proto/filesystem/v1"
 	networkProto "github.com/bookpanda/firecracker-runner-node/proto/network/v1"
+	nodeProto "github.com/bookpanda/firecracker-runner-node/proto/node/v1"
 	vmProto "github.com/bookpanda/firecracker-runner-node/proto/vm/v1"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -33,8 +35,12 @@ func main() {
 
 	vmManager := vm.NewManager(conf, vmCtx)
 	vmSvc := vm.NewService(vmManager, logger.Named("vmSvc"))
+
 	networkSvc := network.NewService(logger.Named("networkSvc"))
 	filesystemSvc := filesystem.NewService(logger.Named("filesystemSvc"))
+
+	nodeManager := node.NewManager(conf)
+	nodeSvc := node.NewService(nodeManager, logger.Named("nodeSvc"))
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%v", conf.Port))
 	if err != nil {
@@ -46,6 +52,7 @@ func main() {
 	vmProto.RegisterVmServiceServer(grpcServer, vmSvc)
 	networkProto.RegisterNetworkServiceServer(grpcServer, networkSvc)
 	filesystemProto.RegisterFileSystemServiceServer(grpcServer, filesystemSvc)
+	nodeProto.RegisterNodeServiceServer(grpcServer, nodeSvc)
 
 	reflection.Register(grpcServer)
 	go func() {

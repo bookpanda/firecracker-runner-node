@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func (n *Node) trackSyscalls(pid int) error {
+func (n *NodeManager) trackSyscalls(pid int) error {
 	tracePath, err := os.Getwd()
 	if err != nil {
 		return fmt.Errorf("failed to get working directory: %v", err)
@@ -29,7 +29,7 @@ func (n *Node) trackSyscalls(pid int) error {
 	return nil
 }
 
-func (n *Node) captureCommandOutput(ctx context.Context, command, logPath string, wait bool) (int, error) {
+func (n *NodeManager) captureCommandOutput(ctx context.Context, command, logPath string, wait bool) (int, error) {
 	logFile, err := os.Create(logPath)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create log file %s: %v", logPath, err)

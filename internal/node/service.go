@@ -14,11 +14,11 @@ type Service interface {
 
 type serviceImpl struct {
 	proto.UnimplementedNodeServiceServer
-	node *Node
+	node *NodeManager
 	log  *zap.Logger
 }
 
-func NewService(node *Node, log *zap.Logger) Service {
+func NewService(node *NodeManager, log *zap.Logger) Service {
 	return &serviceImpl{
 		node: node,
 		log:  log,

@@ -10,7 +10,7 @@ import (
 	"github.com/bookpanda/firecracker-runner-node/internal/config"
 )
 
-type Node struct {
+type NodeManager struct {
 	config      *config.Config
 	traceCtx    context.Context
 	cancelTrace context.CancelFunc
@@ -18,9 +18,9 @@ type Node struct {
 	logsDir     string
 }
 
-func NewNode(cfg *config.Config) *Node {
+func NewManager(cfg *config.Config) *NodeManager {
 	traceCtx, cancelTrace := context.WithCancel(context.Background())
-	return &Node{
+	return &NodeManager{
 		config:      cfg,
 		traceCtx:    traceCtx,
 		cancelTrace: cancelTrace,
@@ -29,7 +29,7 @@ func NewNode(cfg *config.Config) *Node {
 	}
 }
 
-func (n *Node) SendServerCommand(command string) error {
+func (n *NodeManager) SendServerCommand(command string) error {
 	testLogPath := filepath.Join(n.logsDir, "node-server.log")
 
 	pid, err := n.captureCommandOutput(n.traceCtx, command, testLogPath, false)
@@ -46,7 +46,7 @@ func (n *Node) SendServerCommand(command string) error {
 	return nil
 }
 
-func (n *Node) SendClientCommand(command string) error {
+func (n *NodeManager) SendClientCommand(command string) error {
 	testLogPath := filepath.Join(n.logsDir, "node-client.log")
 
 	pid, err := n.captureCommandOutput(n.traceCtx, command, testLogPath, true)
@@ -65,7 +65,7 @@ func (n *Node) SendClientCommand(command string) error {
 	return nil
 }
 
-func (n *Node) StopSyscalls() error {
+func (n *NodeManager) StopSyscalls() error {
 	n.cancelTrace()
 	return nil
 }
