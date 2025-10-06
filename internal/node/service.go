@@ -2,7 +2,6 @@ package node
 
 import (
 	"context"
-	"os/exec"
 
 	proto "github.com/bookpanda/firecracker-runner-node/proto/node/v1"
 	"go.uber.org/zap"
@@ -47,13 +46,10 @@ func (s *serviceImpl) SendClientCommand(req *proto.SendClientCommandNodeRequest,
 	return nil
 }
 
-func (s *serviceImpl) Cleanup(_ context.Context, req *proto.CleanupNodeRequest) (*proto.CleanupNodeResponse, error) {
-	cmd := exec.Command("sudo", "pkill", "-f", "firecracker")
-	if err := cmd.Run(); err != nil {
+func (s *serviceImpl) StopSyscalls(_ context.Context, req *proto.StopSyscallsNodeRequest) (*proto.StopSyscallsNodeResponse, error) {
+	if err := s.node.StopSyscalls(); err != nil {
 		return nil, err
 	}
 
-	s.node = NewNode(s.node.config)
-
-	return &proto.CleanupNodeResponse{}, nil
+	return &proto.StopSyscallsNodeResponse{}, nil
 }

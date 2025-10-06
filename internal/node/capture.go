@@ -16,25 +16,29 @@ func (n *Node) trackSyscalls(pid int) error {
 	if err != nil {
 		return fmt.Errorf("failed to get working directory: %v", err)
 	}
-	tracePath = filepath.Join(tracePath, "trace_syscalls.sh")
 
+	tracePath = filepath.Join(tracePath, "trace_syscalls.sh")
 	command := fmt.Sprintf("sudo %s %d", tracePath, pid)
 	logPath := filepath.Join(n.logsDir, "node-syscalls.log")
-	if err := n.captureCommandOutput(n.traceCtx, command, logPath, false); err != nil {
+
+	_, err = n.captureCommandOutput(n.traceCtx, command, logPath, false)
+	if err != nil {
 		return fmt.Errorf("failed to track syscalls of node: %v", err)
 	}
+
 	return nil
 }
 
-func (n *Node) captureCommandOutput(ctx context.Context, command, logPath string, wait bool) error {
+func (n *Node) captureCommandOutput(ctx context.Context, command, logPath string, wait bool) (int, error) {
 	logFile, err := os.Create(logPath)
 	if err != nil {
-		return fmt.Errorf("failed to create log file %s: %v", logPath, err)
+		return 0, fmt.Errorf("failed to create log file %s: %v", logPath, err)
 	}
 
 	if wait {
 		n.wg.Add(1)
 	}
+	pidChan := make(chan int, 1)
 
 	go func() {
 		if wait {
@@ -67,6 +71,9 @@ func (n *Node) captureCommandOutput(ctx context.Context, command, logPath string
 			log.Printf("Failed to start command on node: %v", err)
 			return
 		}
+		pid := cmd.Process.Pid
+		pidChan <- pid
+		log.Printf("Started command with PID: %d", pid)
 
 		// Track trace processes for proper cleanup
 		// if isTrace {
@@ -101,5 +108,10 @@ func (n *Node) captureCommandOutput(ctx context.Context, command, logPath string
 		}
 	}()
 
-	return nil
+	pid := <-pidChan
+	if pid == 0 {
+		return 0, fmt.Errorf("failed to get process PID")
+	}
+
+	return pid, nil
 }

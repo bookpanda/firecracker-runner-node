@@ -197,6 +197,78 @@ func (x *SendClientCommandNodeResponse) GetOutput() string {
 	return ""
 }
 
+type StopSyscallsNodeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StopSyscallsNodeRequest) Reset() {
+	*x = StopSyscallsNodeRequest{}
+	mi := &file_proto_node_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StopSyscallsNodeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StopSyscallsNodeRequest) ProtoMessage() {}
+
+func (x *StopSyscallsNodeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_node_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StopSyscallsNodeRequest.ProtoReflect.Descriptor instead.
+func (*StopSyscallsNodeRequest) Descriptor() ([]byte, []int) {
+	return file_proto_node_proto_rawDescGZIP(), []int{4}
+}
+
+type StopSyscallsNodeResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StopSyscallsNodeResponse) Reset() {
+	*x = StopSyscallsNodeResponse{}
+	mi := &file_proto_node_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StopSyscallsNodeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StopSyscallsNodeResponse) ProtoMessage() {}
+
+func (x *StopSyscallsNodeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_node_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StopSyscallsNodeResponse.ProtoReflect.Descriptor instead.
+func (*StopSyscallsNodeResponse) Descriptor() ([]byte, []int) {
+	return file_proto_node_proto_rawDescGZIP(), []int{5}
+}
+
 type CleanupNodeRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -205,7 +277,7 @@ type CleanupNodeRequest struct {
 
 func (x *CleanupNodeRequest) Reset() {
 	*x = CleanupNodeRequest{}
-	mi := &file_proto_node_proto_msgTypes[4]
+	mi := &file_proto_node_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -217,7 +289,7 @@ func (x *CleanupNodeRequest) String() string {
 func (*CleanupNodeRequest) ProtoMessage() {}
 
 func (x *CleanupNodeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_node_proto_msgTypes[4]
+	mi := &file_proto_node_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -230,7 +302,7 @@ func (x *CleanupNodeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CleanupNodeRequest.ProtoReflect.Descriptor instead.
 func (*CleanupNodeRequest) Descriptor() ([]byte, []int) {
-	return file_proto_node_proto_rawDescGZIP(), []int{4}
+	return file_proto_node_proto_rawDescGZIP(), []int{6}
 }
 
 type CleanupNodeResponse struct {
@@ -241,7 +313,7 @@ type CleanupNodeResponse struct {
 
 func (x *CleanupNodeResponse) Reset() {
 	*x = CleanupNodeResponse{}
-	mi := &file_proto_node_proto_msgTypes[5]
+	mi := &file_proto_node_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -253,7 +325,7 @@ func (x *CleanupNodeResponse) String() string {
 func (*CleanupNodeResponse) ProtoMessage() {}
 
 func (x *CleanupNodeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_node_proto_msgTypes[5]
+	mi := &file_proto_node_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -266,7 +338,7 @@ func (x *CleanupNodeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CleanupNodeResponse.ProtoReflect.Descriptor instead.
 func (*CleanupNodeResponse) Descriptor() ([]byte, []int) {
-	return file_proto_node_proto_rawDescGZIP(), []int{5}
+	return file_proto_node_proto_rawDescGZIP(), []int{7}
 }
 
 var File_proto_node_proto protoreflect.FileDescriptor
@@ -281,12 +353,15 @@ const file_proto_node_proto_rawDesc = "" +
 	"\x1cSendClientCommandNodeRequest\x12\x18\n" +
 	"\acommand\x18\x01 \x01(\tR\acommand\"7\n" +
 	"\x1dSendClientCommandNodeResponse\x12\x16\n" +
-	"\x06output\x18\x01 \x01(\tR\x06output\"\x14\n" +
+	"\x06output\x18\x01 \x01(\tR\x06output\"\x19\n" +
+	"\x17StopSyscallsNodeRequest\"\x1a\n" +
+	"\x18StopSyscallsNodeResponse\"\x14\n" +
 	"\x12CleanupNodeRequest\"\x15\n" +
-	"\x13CleanupNodeResponse2\xc7\x02\n" +
+	"\x13CleanupNodeResponse2\xaa\x03\n" +
 	"\vNodeService\x12p\n" +
 	"\x11SendServerCommand\x12+.proto.node.v1.SendServerCommandNodeRequest\x1a,.proto.node.v1.SendServerCommandNodeResponse\"\x00\x12r\n" +
-	"\x11SendClientCommand\x12+.proto.node.v1.SendClientCommandNodeRequest\x1a,.proto.node.v1.SendClientCommandNodeResponse\"\x000\x01\x12R\n" +
+	"\x11SendClientCommand\x12+.proto.node.v1.SendClientCommandNodeRequest\x1a,.proto.node.v1.SendClientCommandNodeResponse\"\x000\x01\x12a\n" +
+	"\fStopSyscalls\x12&.proto.node.v1.StopSyscallsNodeRequest\x1a'.proto.node.v1.StopSyscallsNodeResponse\"\x00\x12R\n" +
 	"\aCleanup\x12!.proto.node.v1.CleanupNodeRequest\x1a\".proto.node.v1.CleanupNodeResponse\"\x00B\x0fZ\rproto/node/v1b\x06proto3"
 
 var (
@@ -301,24 +376,28 @@ func file_proto_node_proto_rawDescGZIP() []byte {
 	return file_proto_node_proto_rawDescData
 }
 
-var file_proto_node_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_proto_node_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_proto_node_proto_goTypes = []any{
 	(*SendServerCommandNodeRequest)(nil),  // 0: proto.node.v1.SendServerCommandNodeRequest
 	(*SendServerCommandNodeResponse)(nil), // 1: proto.node.v1.SendServerCommandNodeResponse
 	(*SendClientCommandNodeRequest)(nil),  // 2: proto.node.v1.SendClientCommandNodeRequest
 	(*SendClientCommandNodeResponse)(nil), // 3: proto.node.v1.SendClientCommandNodeResponse
-	(*CleanupNodeRequest)(nil),            // 4: proto.node.v1.CleanupNodeRequest
-	(*CleanupNodeResponse)(nil),           // 5: proto.node.v1.CleanupNodeResponse
+	(*StopSyscallsNodeRequest)(nil),       // 4: proto.node.v1.StopSyscallsNodeRequest
+	(*StopSyscallsNodeResponse)(nil),      // 5: proto.node.v1.StopSyscallsNodeResponse
+	(*CleanupNodeRequest)(nil),            // 6: proto.node.v1.CleanupNodeRequest
+	(*CleanupNodeResponse)(nil),           // 7: proto.node.v1.CleanupNodeResponse
 }
 var file_proto_node_proto_depIdxs = []int32{
 	0, // 0: proto.node.v1.NodeService.SendServerCommand:input_type -> proto.node.v1.SendServerCommandNodeRequest
 	2, // 1: proto.node.v1.NodeService.SendClientCommand:input_type -> proto.node.v1.SendClientCommandNodeRequest
-	4, // 2: proto.node.v1.NodeService.Cleanup:input_type -> proto.node.v1.CleanupNodeRequest
-	1, // 3: proto.node.v1.NodeService.SendServerCommand:output_type -> proto.node.v1.SendServerCommandNodeResponse
-	3, // 4: proto.node.v1.NodeService.SendClientCommand:output_type -> proto.node.v1.SendClientCommandNodeResponse
-	5, // 5: proto.node.v1.NodeService.Cleanup:output_type -> proto.node.v1.CleanupNodeResponse
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	4, // 2: proto.node.v1.NodeService.StopSyscalls:input_type -> proto.node.v1.StopSyscallsNodeRequest
+	6, // 3: proto.node.v1.NodeService.Cleanup:input_type -> proto.node.v1.CleanupNodeRequest
+	1, // 4: proto.node.v1.NodeService.SendServerCommand:output_type -> proto.node.v1.SendServerCommandNodeResponse
+	3, // 5: proto.node.v1.NodeService.SendClientCommand:output_type -> proto.node.v1.SendClientCommandNodeResponse
+	5, // 6: proto.node.v1.NodeService.StopSyscalls:output_type -> proto.node.v1.StopSyscallsNodeResponse
+	7, // 7: proto.node.v1.NodeService.Cleanup:output_type -> proto.node.v1.CleanupNodeResponse
+	4, // [4:8] is the sub-list for method output_type
+	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -335,7 +414,7 @@ func file_proto_node_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_node_proto_rawDesc), len(file_proto_node_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -32,9 +32,15 @@ func NewNode(cfg *config.Config) *Node {
 func (n *Node) SendServerCommand(command string) error {
 	testLogPath := filepath.Join(n.logsDir, "node-server.log")
 
-	if err := n.captureCommandOutput(n.traceCtx, command, testLogPath, false); err != nil {
+	pid, err := n.captureCommandOutput(n.traceCtx, command, testLogPath, false)
+	if err != nil {
 		log.Printf("failed to send command to node: %v", err)
 		return fmt.Errorf("failed to send command to node: %v", err)
+	}
+
+	if err := n.trackSyscalls(pid); err != nil {
+		log.Printf("failed to track syscalls of node: %v", err)
+		return fmt.Errorf("failed to track syscalls of node: %v", err)
 	}
 
 	return nil
@@ -43,9 +49,15 @@ func (n *Node) SendServerCommand(command string) error {
 func (n *Node) SendClientCommand(command string) error {
 	testLogPath := filepath.Join(n.logsDir, "node-client.log")
 
-	if err := n.captureCommandOutput(n.traceCtx, command, testLogPath, true); err != nil {
+	pid, err := n.captureCommandOutput(n.traceCtx, command, testLogPath, true)
+	if err != nil {
 		log.Printf("failed to send command to node: %v", err)
 		return fmt.Errorf("failed to send command to node: %v", err)
+	}
+
+	if err := n.trackSyscalls(pid); err != nil {
+		log.Printf("failed to track syscalls of node: %v", err)
+		return fmt.Errorf("failed to track syscalls of node: %v", err)
 	}
 
 	n.wg.Wait()
@@ -53,7 +65,7 @@ func (n *Node) SendClientCommand(command string) error {
 	return nil
 }
 
-func (n *Node) stopSyscalls() error {
+func (n *Node) StopSyscalls() error {
 	n.cancelTrace()
 	return nil
 }

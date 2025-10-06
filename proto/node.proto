@@ -7,7 +7,7 @@ option go_package = "proto/node/v1";
 service NodeService {
   rpc SendServerCommand(SendServerCommandNodeRequest) returns (SendServerCommandNodeResponse){}
   rpc SendClientCommand(SendClientCommandNodeRequest) returns (stream SendClientCommandNodeResponse){}
-  rpc Cleanup(CleanupNodeRequest) returns (CleanupNodeResponse){}
+  rpc StopSyscalls(StopSyscallsNodeRequest) returns (StopSyscallsNodeResponse){}
 }
 
 message SendServerCommandNodeRequest{
@@ -26,8 +26,8 @@ message SendClientCommandNodeResponse{
   string output = 1;
 }
 
-message CleanupNodeRequest{
+message StopSyscallsNodeRequest{
 }
 
-message CleanupNodeResponse{
+message StopSyscallsNodeResponse{
 }

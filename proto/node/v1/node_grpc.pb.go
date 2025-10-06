@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	NodeService_SendServerCommand_FullMethodName = "/proto.node.v1.NodeService/SendServerCommand"
 	NodeService_SendClientCommand_FullMethodName = "/proto.node.v1.NodeService/SendClientCommand"
+	NodeService_StopSyscalls_FullMethodName      = "/proto.node.v1.NodeService/StopSyscalls"
 	NodeService_Cleanup_FullMethodName           = "/proto.node.v1.NodeService/Cleanup"
 )
 
@@ -30,6 +31,7 @@ const (
 type NodeServiceClient interface {
 	SendServerCommand(ctx context.Context, in *SendServerCommandNodeRequest, opts ...grpc.CallOption) (*SendServerCommandNodeResponse, error)
 	SendClientCommand(ctx context.Context, in *SendClientCommandNodeRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[SendClientCommandNodeResponse], error)
+	StopSyscalls(ctx context.Context, in *StopSyscallsNodeRequest, opts ...grpc.CallOption) (*StopSyscallsNodeResponse, error)
 	Cleanup(ctx context.Context, in *CleanupNodeRequest, opts ...grpc.CallOption) (*CleanupNodeResponse, error)
 }
 
@@ -70,6 +72,16 @@ func (c *nodeServiceClient) SendClientCommand(ctx context.Context, in *SendClien
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type NodeService_SendClientCommandClient = grpc.ServerStreamingClient[SendClientCommandNodeResponse]
 
+func (c *nodeServiceClient) StopSyscalls(ctx context.Context, in *StopSyscallsNodeRequest, opts ...grpc.CallOption) (*StopSyscallsNodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StopSyscallsNodeResponse)
+	err := c.cc.Invoke(ctx, NodeService_StopSyscalls_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *nodeServiceClient) Cleanup(ctx context.Context, in *CleanupNodeRequest, opts ...grpc.CallOption) (*CleanupNodeResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CleanupNodeResponse)
@@ -86,6 +98,7 @@ func (c *nodeServiceClient) Cleanup(ctx context.Context, in *CleanupNodeRequest,
 type NodeServiceServer interface {
 	SendServerCommand(context.Context, *SendServerCommandNodeRequest) (*SendServerCommandNodeResponse, error)
 	SendClientCommand(*SendClientCommandNodeRequest, grpc.ServerStreamingServer[SendClientCommandNodeResponse]) error
+	StopSyscalls(context.Context, *StopSyscallsNodeRequest) (*StopSyscallsNodeResponse, error)
 	Cleanup(context.Context, *CleanupNodeRequest) (*CleanupNodeResponse, error)
 	mustEmbedUnimplementedNodeServiceServer()
 }
@@ -102,6 +115,9 @@ func (UnimplementedNodeServiceServer) SendServerCommand(context.Context, *SendSe
 }
 func (UnimplementedNodeServiceServer) SendClientCommand(*SendClientCommandNodeRequest, grpc.ServerStreamingServer[SendClientCommandNodeResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method SendClientCommand not implemented")
+}
+func (UnimplementedNodeServiceServer) StopSyscalls(context.Context, *StopSyscallsNodeRequest) (*StopSyscallsNodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StopSyscalls not implemented")
 }
 func (UnimplementedNodeServiceServer) Cleanup(context.Context, *CleanupNodeRequest) (*CleanupNodeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Cleanup not implemented")
@@ -156,6 +172,24 @@ func _NodeService_SendClientCommand_Handler(srv interface{}, stream grpc.ServerS
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type NodeService_SendClientCommandServer = grpc.ServerStreamingServer[SendClientCommandNodeResponse]
 
+func _NodeService_StopSyscalls_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StopSyscallsNodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServiceServer).StopSyscalls(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NodeService_StopSyscalls_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServiceServer).StopSyscalls(ctx, req.(*StopSyscallsNodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _NodeService_Cleanup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CleanupNodeRequest)
 	if err := dec(in); err != nil {
@@ -184,6 +218,10 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendServerCommand",
 			Handler:    _NodeService_SendServerCommand_Handler,
+		},
+		{
+			MethodName: "StopSyscalls",
+			Handler:    _NodeService_StopSyscalls_Handler,
 		},
 		{
 			MethodName: "Cleanup",
