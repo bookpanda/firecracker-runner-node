@@ -30,6 +30,7 @@ func NewManager(cfg *config.Config) *NodeManager {
 }
 
 func (n *NodeManager) SendServerCommand(command string) error {
+	log.Printf("NodeManager: Sending server command: %s", command)
 	testLogPath := filepath.Join(n.logsDir, "node-server.log")
 
 	pid, err := n.captureCommandOutput(n.traceCtx, command, testLogPath, false)
@@ -47,6 +48,7 @@ func (n *NodeManager) SendServerCommand(command string) error {
 }
 
 func (n *NodeManager) SendClientCommand(command string) error {
+	log.Printf("NodeManager: Sending client command: %s", command)
 	testLogPath := filepath.Join(n.logsDir, "node-client.log")
 
 	pid, err := n.captureCommandOutput(n.traceCtx, command, testLogPath, true)
@@ -66,6 +68,7 @@ func (n *NodeManager) SendClientCommand(command string) error {
 }
 
 func (n *NodeManager) StopSyscalls() error {
+	log.Printf("NodeManager: Stopping syscalls")
 	n.cancelTrace()
 	return nil
 }

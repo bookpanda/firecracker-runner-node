@@ -12,6 +12,7 @@ import (
 )
 
 func (n *NodeManager) trackSyscalls(pid int) error {
+	log.Printf("NodeManager: Tracking syscalls for PID: %d", pid)
 	tracePath, err := os.Getwd()
 	if err != nil {
 		return fmt.Errorf("failed to get working directory: %v", err)
@@ -32,6 +33,7 @@ func (n *NodeManager) trackSyscalls(pid int) error {
 func (n *NodeManager) captureCommandOutput(ctx context.Context, command, logPath string, wait bool) (int, error) {
 	logFile, err := os.Create(logPath)
 	if err != nil {
+		log.Printf("captureCommand: Failed to create log file %s: %v", logPath, err)
 		return 0, fmt.Errorf("failed to create log file %s: %v", logPath, err)
 	}
 
@@ -110,6 +112,7 @@ func (n *NodeManager) captureCommandOutput(ctx context.Context, command, logPath
 
 	pid := <-pidChan
 	if pid == 0 {
+		log.Printf("captureCommand: Failed to get process PID")
 		return 0, fmt.Errorf("failed to get process PID")
 	}
 
