@@ -14,19 +14,19 @@ type Service interface {
 
 type serviceImpl struct {
 	proto.UnimplementedNodeServiceServer
-	node *NodeManager
-	log  *zap.Logger
+	manager *NodeManager
+	log     *zap.Logger
 }
 
-func NewService(node *NodeManager, log *zap.Logger) Service {
+func NewService(manager *NodeManager, log *zap.Logger) Service {
 	return &serviceImpl{
-		node: node,
-		log:  log,
+		manager: manager,
+		log:     log,
 	}
 }
 
 func (s *serviceImpl) SendServerCommand(_ context.Context, req *proto.SendServerCommandNodeRequest) (*proto.SendServerCommandNodeResponse, error) {
-	if err := s.node.SendServerCommand(req.Command); err != nil {
+	if err := s.manager.SendServerCommand(req.Command); err != nil {
 		return nil, err
 	}
 
@@ -34,7 +34,7 @@ func (s *serviceImpl) SendServerCommand(_ context.Context, req *proto.SendServer
 }
 
 func (s *serviceImpl) SendClientCommand(req *proto.SendClientCommandNodeRequest, stream grpc.ServerStreamingServer[proto.SendClientCommandNodeResponse]) error {
-	if err := s.node.SendClientCommand(req.Command); err != nil {
+	if err := s.manager.SendClientCommand(req.Command); err != nil {
 		return err
 	}
 
@@ -47,9 +47,15 @@ func (s *serviceImpl) SendClientCommand(req *proto.SendClientCommandNodeRequest,
 }
 
 func (s *serviceImpl) StopSyscalls(_ context.Context, req *proto.StopSyscallsNodeRequest) (*proto.StopSyscallsNodeResponse, error) {
-	if err := s.node.StopSyscalls(); err != nil {
+	if err := s.manager.StopSyscalls(); err != nil {
 		return nil, err
 	}
 
 	return &proto.StopSyscallsNodeResponse{}, nil
+}
+
+func (s *serviceImpl) Cleanup(_ context.Context, req *proto.CleanupNodeRequest) (*proto.CleanupNodeResponse, error) {
+	s.manager = NewManager(s.manager.config)
+
+	return &proto.CleanupNodeResponse{}, nil
 }

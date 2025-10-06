@@ -8,6 +8,7 @@ service NodeService {
   rpc SendServerCommand(SendServerCommandNodeRequest) returns (SendServerCommandNodeResponse){}
   rpc SendClientCommand(SendClientCommandNodeRequest) returns (stream SendClientCommandNodeResponse){}
   rpc StopSyscalls(StopSyscallsNodeRequest) returns (StopSyscallsNodeResponse){}
+  rpc Cleanup(CleanupNodeRequest) returns (CleanupNodeResponse){}
 }
 
 message SendServerCommandNodeRequest{
@@ -30,4 +31,10 @@ message StopSyscallsNodeRequest{
 }
 
 message StopSyscallsNodeResponse{
+}
+
+message CleanupNodeRequest{
+}
+
+message CleanupNodeResponse{
 }
