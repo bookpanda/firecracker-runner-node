@@ -29,6 +29,7 @@ func NewManager(cfg *config.Config, vmCtx context.Context) *Manager {
 		traceCtx:    traceCtx,
 		cancelTrace: cancelTrace,
 		vms:         make(map[string]*SimplifiedVM),
+		wg:          sync.WaitGroup{},
 		syscallsDir: "./vm-syscalls",
 		testDir:     "./vm-test",
 	}
