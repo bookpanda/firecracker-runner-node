@@ -20,7 +20,7 @@ func (n *NodeManager) trackSyscalls(pid int) error {
 
 	tracePath = filepath.Join(tracePath, "trace_syscalls.sh")
 	command := fmt.Sprintf("sudo %s %d", tracePath, pid)
-	logPath := filepath.Join(n.logsDir, "node-syscalls.log")
+	logPath := filepath.Join(n.logsDir, fmt.Sprintf("node-syscalls-%d.log", pid))
 
 	_, err = n.captureCommandOutput(n.traceCtx, command, logPath, false)
 	if err != nil {
@@ -37,52 +37,45 @@ func (n *NodeManager) captureCommandOutput(ctx context.Context, command, logPath
 		return 0, fmt.Errorf("failed to create log file %s: %v", logPath, err)
 	}
 
+	// Split the command properly for exec
+	args := strings.Fields(command)
+	if len(args) == 0 {
+		logFile.Close()
+		return 0, fmt.Errorf("empty command")
+	}
+	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
+
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		logFile.Close()
+		return 0, fmt.Errorf("failed to create stdout pipe: %v", err)
+	}
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		logFile.Close()
+		return 0, fmt.Errorf("failed to create stderr pipe: %v", err)
+	}
+
+	if err := cmd.Start(); err != nil {
+		logFile.Close()
+		return 0, fmt.Errorf("failed to start command: %v", err)
+	}
+
+	// Get PID immediately after start
+	pid := cmd.Process.Pid
+	log.Printf("Started command with PID: %d, wait=%v", pid, wait)
+
 	if wait {
 		n.wg.Add(1)
 	}
-	pidChan := make(chan int, 1)
 
+	// Now handle I/O and waiting in goroutine
 	go func() {
 		if wait {
 			defer n.wg.Done()
 		}
 		defer logFile.Close()
-
-		var cmd *exec.Cmd
-		// Split the command properly for exec
-		args := strings.Fields(command)
-		if len(args) == 0 {
-			log.Printf("Empty trace command for node")
-			return
-		}
-		cmd = exec.CommandContext(ctx, args[0], args[1:]...)
-
-		stdout, err := cmd.StdoutPipe()
-		if err != nil {
-			log.Printf("Failed to create stdout pipe for node: %v", err)
-			return
-		}
-
-		stderr, err := cmd.StderrPipe()
-		if err != nil {
-			log.Printf("Failed to create stderr pipe for node: %v", err)
-			return
-		}
-
-		if err := cmd.Start(); err != nil {
-			log.Printf("Failed to start command on node: %v", err)
-			return
-		}
-		pid := cmd.Process.Pid
-		pidChan <- pid
-		log.Printf("Started command with PID: %d", pid)
-
-		// Track trace processes for proper cleanup
-		// if isTrace {
-		// 	e.traceProcsMux.Lock()
-		// 	e.traceProcs = append(e.traceProcs, cmd)
-		// 	e.traceProcsMux.Unlock()
-		// }
 
 		go func() {
 			scanner := bufio.NewScanner(stdout)
@@ -99,22 +92,22 @@ func (n *NodeManager) captureCommandOutput(ctx context.Context, command, logPath
 		}()
 
 		if wait {
-			cmd.Wait()
-			log.Printf("Command completed on node, output saved to %s", logPath)
+			err := cmd.Wait()
+			if err != nil {
+				log.Printf("Command (PID %d) completed with error: %v, output saved to %s", pid, err, logPath)
+			} else {
+				log.Printf("Command (PID %d) completed successfully, output saved to %s", pid, logPath)
+			}
 		} else {
 			// for trace/server: stop when ctx is canceled
+			log.Printf("Command (PID %d) running, waiting for context cancellation", pid)
 			<-ctx.Done()
-			cmd.Process.Kill() // kill ONLY server process
-			cmd.Wait()         // wait for stdout/stderr to be closed
-			log.Printf("Command on node stopped, logs saved to %s", logPath)
+			log.Printf("Context cancelled, killing command (PID %d)", pid)
+			cmd.Process.Kill()
+			cmd.Wait()
+			log.Printf("Command (PID %d) stopped, logs saved to %s", pid, logPath)
 		}
 	}()
-
-	pid := <-pidChan
-	if pid == 0 {
-		log.Printf("captureCommand: Failed to get process PID")
-		return 0, fmt.Errorf("failed to get process PID")
-	}
 
 	return pid, nil
 }
