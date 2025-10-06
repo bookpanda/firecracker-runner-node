@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package proto.node.v1;
+
+option go_package = "proto/node/v1";
+
+service NodeService {
+  rpc SendServerCommand(SendServerCommandNodeRequest) returns (SendServerCommandNodeResponse){}
+  rpc SendClientCommand(SendClientCommandNodeRequest) returns (stream SendClientCommandNodeResponse){}
+  rpc Cleanup(CleanupNodeRequest) returns (CleanupNodeResponse){}
+}
+
+message SendServerCommandNodeRequest{
+  string command = 1;
+}
+
+message SendServerCommandNodeResponse{
+  string output = 1;
+}
+
+message SendClientCommandNodeRequest{
+  string command = 1;
+}
+
+message SendClientCommandNodeResponse{
+  string output = 1;
+}
+
+message CleanupNodeRequest{
+}
+
+message CleanupNodeResponse{
+}
