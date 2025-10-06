@@ -2,6 +2,8 @@ package node
 
 import (
 	"context"
+	"log"
+	"os/exec"
 
 	proto "github.com/bookpanda/firecracker-runner-node/proto/node/v1"
 	"go.uber.org/zap"
@@ -55,6 +57,17 @@ func (s *serviceImpl) StopSyscalls(_ context.Context, req *proto.StopSyscallsNod
 }
 
 func (s *serviceImpl) Cleanup(_ context.Context, req *proto.CleanupNodeRequest) (*proto.CleanupNodeResponse, error) {
+	log.Printf("Cleaning up node...")
+	cmd := exec.Command("sudo", "pkill", "-f", "iperf3")
+	if err := cmd.Run(); err != nil {
+		log.Printf("Warning: failed to kill iperf3 processes: %v", err)
+	}
+
+	cmd = exec.Command("sudo", "pkill", "-f", "sockperf")
+	if err := cmd.Run(); err != nil {
+		log.Printf("Warning: failed to kill sockperf processes: %v", err)
+	}
+
 	s.manager = NewManager(s.manager.config)
 
 	return &proto.CleanupNodeResponse{}, nil
